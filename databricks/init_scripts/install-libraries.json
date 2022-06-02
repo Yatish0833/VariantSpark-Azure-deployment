@@ -1,0 +1,74 @@
+{
+    "cluster_id": "10201-my-cluster",
+    "libraries": [
+      {
+        "jar": "dbfs:/FileStore/jars/variant-spark_2.11-0.4.0-SNAPSHOT-all.jar"
+      },
+      {
+        "pypi": {
+          "package": "Sphinx==3.3.1",
+          "repo": "https://my-pypi-mirror.com"
+        }
+      },
+      {
+        "pypi": {
+          "package": "sphinx-rtd-theme==0.5.0",
+          "repo": "https://my-pypi-mirror.com"
+        }
+      },
+      {
+        "pypi": {
+          "package": "nbsphinx==0.8.0",
+          "repo": "https://my-pypi-mirror.com"
+        }
+      },
+      {
+        "pypi": {
+          "package": "pylint==2.6.0",
+          "repo": "https://my-pypi-mirror.com"
+        }
+      }, 
+      {
+        "pypi": {
+          "package": "pytest==6.2.2",
+          "repo": "https://my-pypi-mirror.com"
+        }
+      },
+      {
+        "pypi": {
+          "package": "twine==3.2.0",
+          "repo": "https://my-pypi-mirror.com"
+        }
+      },    
+      {
+        "pypi": {
+          "package": "pandas==1.1.4",
+          "repo": "https://my-pypi-mirror.com"
+        }
+      },
+      {
+        "pypi": {
+          "package": "typedecorator==0.0.5",
+          "repo": "https://my-pypi-mirror.com"
+        }
+      },   
+      {
+        "pypi": {
+          "package": "Jinja2==3.0.3",
+          "repo": "https://my-pypi-mirror.com"
+        }
+      },
+      {
+        "pypi": {
+          "package": "hail==0.2.74",
+          "repo": "https://my-pypi-mirror.com"
+        }
+      },   
+      {
+        "pypi": {
+          "package": "variant-spark",
+          "repo": "https://my-pypi-mirror.com"
+        }
+      }                                
+    ]
+  }
