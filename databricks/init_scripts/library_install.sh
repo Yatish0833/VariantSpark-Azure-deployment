@@ -10,5 +10,5 @@
 /databricks/python/bin/pip install typedecorator==0.0.5
 /databricks/python/bin/pip install Jinja2==3.0.3
 /databricks/python/bin/pip install hail==0.2.74
-/databricks/python/bin/pip install variant-spark
+/databricks/python/bin/pip install variant-spark==0.5.0a0.dev0
 

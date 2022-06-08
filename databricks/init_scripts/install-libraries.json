@@ -2,7 +2,7 @@
     "cluster_id": "10201-my-cluster",
     "libraries": [
       {
-        "jar": "dbfs:/FileStore/jars/variant-spark_2.11-0.4.0-SNAPSHOT-all.jar"
+        "jar": "dbfs:/FileStore/jars/variant-spark_2.11-0.5.0-a0-dev0-all.jar"
       },
       {
         "pypi": {
@@ -66,7 +66,7 @@
       },   
       {
         "pypi": {
-          "package": "variant-spark",
+          "package": "variant-sparki==0.5.0a0.dev0",
           "repo": "https://my-pypi-mirror.com"
         }
       }                                
