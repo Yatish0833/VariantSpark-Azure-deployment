@@ -4,16 +4,13 @@
 DATABRICKS_SPARK_CONF='{
         "spark.databricks.delta.preview.enabled": "true"
     }'
-DATABRICKS_INIT_CONFIG='[{
-        "dbfs": {
-            "destination": "dbfs:/databricks/init/library_install.sh"
-        }
-    }]'
+
 DATABRICKS_CLUSTER_LOG='{
     "dbfs": {
       "destination": "dbfs:/logs"
     }
 }'
+
 
 # Databricks Auth headers
 adbGlobalToken=$(az account get-access-token --resource 2ff814a6-3304-4ab8-85cb-cd0e6f879c1d --output json | jq -r .accessToken)
@@ -33,7 +30,6 @@ CLUSTER_CREATE_JSON_STRING=$(jq -n -c \
     --arg nw "$DATABRICKS_NUM_WORKERS" \
     --arg spc "$DATABRICKS_SPARK_CONF" \
     --arg at "$DATABRICKS_AUTO_TERMINATE_MINUTES" \
-    --arg is "$DATABRICKS_INIT_CONFIG" \
     --arg cl "$DATABRICKS_CLUSTER_LOG" \
     '{cluster_name: $cn,
                     idempotency_token: $cn,
@@ -42,7 +38,6 @@ CLUSTER_CREATE_JSON_STRING=$(jq -n -c \
                     num_workers: ($nw|tonumber),
                     autotermination_minutes: ($at|tonumber),
                     spark_conf: ($spc|fromjson),
-                    init_scripts: ($is|fromjson),
                     cluster_log_conf: ($cl|fromjson)
                     }')
 
