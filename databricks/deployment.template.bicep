@@ -8,7 +8,7 @@ param adb_workspace_url string
 param adb_workspace_id string
 param adb_secret_scope_name string
 param adb_cluster_name string = 'variantspark-cluster-01'
-param adb_spark_version string = '6.4.x-esr-scala2.11'
+param adb_spark_version string = '10.4.x-scala2.12'
 param adb_node_type string = 'Standard_D3_v2'
 param adb_num_worker string = '3'
 param adb_auto_terminate_min string = '30'
