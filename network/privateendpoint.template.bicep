@@ -10,15 +10,8 @@ param keyvaultPrivateLinkResource string
 @description('keyvault name.')
 param keyvaultName string
 
-@description('event hub name.')
-param eventHubName string
-
-@description('EventHub Private Link resource.')
-param eventHubPrivateLinkResource string
-
 var targetSubResourceDfs = 'dfs'
 var targetSubResourceVault = 'vault'
-var targetSubResourceEventHub = 'namespace'
 
 @description('Vnet name for private link')
 param vnetName string
@@ -34,9 +27,6 @@ var storageAccountPrivateEndpointName_var = '${storageAccountName}privateendpoin
 
 var privateDnsNameVault_var = 'privatelink.vaultcore.azure.net'
 var keyvaultPrivateEndpointName_var = '${keyvaultName}privateendpoint'
-
-var privateDnsNameEventHub_var = 'privatelink.servicebus.windows.net'
-var eventHubPrivateEndpointName_var = '${eventHubName}privateendpoint'
 
 resource storageAccountPrivateEndpointName 'Microsoft.Network/privateEndpoints@2021-02-01' = {
   name: storageAccountPrivateEndpointName_var
@@ -149,58 +139,4 @@ resource keyvaultPrivateEndpointName_default 'Microsoft.Network/privateEndpoints
   }
 }
 
-resource eventHubPrivateEndpointName 'Microsoft.Network/privateEndpoints@2021-02-01' = {
-  name: eventHubPrivateEndpointName_var
-  location: privateLinkLocation
-  properties: {
-    privateLinkServiceConnections: [
-      {
-        name: eventHubPrivateEndpointName_var
-        properties: {
-          privateLinkServiceId: eventHubPrivateLinkResource
-          groupIds: [
-            targetSubResourceEventHub
-          ]
-        }
-      }
-    ]
-    subnet: {
-      id: privateLinkSubnetId
-    }
-  }
-}
-resource privateDnsNameEventHub 'Microsoft.Network/privateDnsZones@2020-06-01' = {
-  name: privateDnsNameEventHub_var
-  location: 'global'
-  tags: {}
-  properties: {}
-  dependsOn: [
-    eventHubPrivateEndpointName
-  ]
-}
-resource privateDnsNameEventHub_vnetName 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2020-06-01' = {
-  parent: privateDnsNameEventHub
-  name: vnetName
-  location: 'global'
-  properties: {
-    virtualNetwork: {
-      id: resourceId('Microsoft.Network/virtualNetworks', vnetName)
-    }
-    registrationEnabled: false
-  }
-}
-resource eventHubPrivateEndpointName_default 'Microsoft.Network/privateEndpoints/privateDnsZoneGroups@2021-02-01' = {
-  parent: eventHubPrivateEndpointName
-  name: 'default'
-  properties: {
-    privateDnsZoneConfigs: [
-      {
-        name: 'privatelink-servicebus-windows-net'
-        properties: {
-          privateDnsZoneId: privateDnsNameEventHub.id
-        }
-      }
-    ]
-  }
-}
 

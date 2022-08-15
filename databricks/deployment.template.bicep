@@ -8,15 +8,14 @@ param adb_workspace_url string
 param adb_workspace_id string
 param adb_secret_scope_name string
 param adb_cluster_name string = 'variantspark-cluster-01'
-param adb_spark_version string = '10.4.x-scala2.12'
+param adb_spark_version string = '9.1.x-scala2.12'
 param adb_node_type string = 'Standard_D3_v2'
 param adb_num_worker string = '3'
+param hail_docker_image string = 'projectglow/databricks-hail:0.2.93'
 param adb_auto_terminate_min string = '30'
 param LogAWkspId string
 param LogAWkspKey string
 param storageKey string
-param evenHubKey string
-param eventHubId string
 
 resource createAdbPATToken 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
   name: 'createAdbPATToken'
@@ -100,10 +99,6 @@ resource secretScopeLink 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
         value: storageKey
       }
       {
-        name: 'EVENT_HUB_KEY'
-        value: evenHubKey
-      }
-      {
         name: 'ADB_PAT_TOKEN'
         value: createAdbPATToken.properties.outputs.token_value
       }
@@ -138,10 +133,6 @@ resource uploadFilesToAdb 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
       {
         name: 'ADB_WORKSPACE_ID'
         value: adb_workspace_id
-      }
-      {
-        name: 'EVENT_HUB_ID'
-        value: eventHubId
       }
     ]
     scriptContent: loadTextContent('deployment/pre_cluster_create.sh')
@@ -196,6 +187,10 @@ resource createAdbCluster 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
       {
         name: 'DATABRICKS_AUTO_TERMINATE_MINUTES'
         value: adb_auto_terminate_min
+      }
+      {
+        name: 'HAIL_DOCKER_IMAGE'
+        value: hail_docker_image
       }
     ]
     scriptContent: loadTextContent('deployment/create_cluster.sh')

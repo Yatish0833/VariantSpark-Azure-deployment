@@ -47,5 +47,5 @@ for file in data/*.*; do
         --form overwrite=true
 done
 
-
-
+echo "Enable Container Services"
+curl -sS -X PATCH -H "$authHeader" -H "$adbSPMgmtToken" -H "$adbResourceId"         https://${ADB_WORKSPACE_URL}/api/2.0/preview/workspace-conf --data '{"enableDcs": "true" }'
