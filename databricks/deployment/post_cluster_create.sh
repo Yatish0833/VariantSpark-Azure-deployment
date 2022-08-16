@@ -15,9 +15,19 @@ libraries='[
         },        
         {
             "pypi": {
-            "package": "hail==0.2.74"
+            "package": "patsy"
             }
-        },   
+        }, 
+        {
+            "pypi": {
+            "package": "seaborn"
+            }
+        },  
+        {
+            "pypi": {
+            "package": "statsmodels"
+            }
+        },                    
         {
             "pypi": {
             "package": "variant-spark"

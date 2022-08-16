@@ -3,7 +3,7 @@ targetScope = 'subscription'
 @minLength(2)
 @maxLength(4)
 @description('2-4 chars to prefix the Azure resources, NOTE: no number or symbols')
-param prefix string = 'bob'
+param prefix string = 'bnb'
 
 @description('Client PC username, NOTE: do not use admin')
 param adminUsername string
@@ -28,7 +28,6 @@ var firewallName = '${substring(uString, 0, 6)}HubFW'
 var firewallPublicIpName = '${substring(uString, 0, 6)}FWPIp'
 var fwRoutingTable = '${substring(uString, 0, 6)}AdbRoutingTbl'
 var clientPcName = '${substring(uString, 0, 6)}ClientPc'
-var eHNameSpace = '${substring(uString, 0, 6)}eh'
 var adbAkvLinkName = '${substring(uString, 0, 6)}SecretScope'
 // var routeTableName = 'RouteTable'
 
@@ -222,13 +221,6 @@ module loganalytics './monitor/loganalytics.template.bicep' = {
   name: 'LogAnalytics'
 }
 
-module eventHubLogging './monitor/eventhub.template.bicep' = {
-  scope: rg
-  name: 'EventHub'
-  params: {
-    namespaceName: eHNameSpace
-  }
-}
 
 module privateEndPoints './network/privateendpoint.template.bicep' = {
   scope: rg
@@ -239,8 +231,6 @@ module privateEndPoints './network/privateendpoint.template.bicep' = {
     privateLinkSubnetId: vnets.outputs.privatelinksubnet_id
     storageAccountName: adlsGen2.name
     storageAccountPrivateLinkResource: adlsGen2.outputs.storageaccount_id
-    eventHubName: eventHubLogging.outputs.eHName
-    eventHubPrivateLinkResource: eventHubLogging.outputs.eHNamespaceId
     vnetName: vnets.outputs.spokeVnetName
   }
 }
@@ -259,8 +249,6 @@ module createDatabricksCluster './databricks/deployment.template.bicep' = {
     LogAWkspId: loganalytics.outputs.logAnalyticsWkspId
     LogAWkspKey: loganalytics.outputs.primarySharedKey
     storageKey: adlsGen2.outputs.key1
-    evenHubKey: eventHubLogging.outputs.eHPConnString
-    eventHubId: eventHubLogging.outputs.eHubNameId
   }
 }
 

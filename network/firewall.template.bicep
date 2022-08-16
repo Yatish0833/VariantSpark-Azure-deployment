@@ -153,6 +153,24 @@ resource firewallName_resource 'Microsoft.Network/azureFirewalls@2021-02-01' = {
               ]
             }
             {
+              name: 'Coverall'
+              protocols: [
+                'TCP'
+              ]
+              sourceAddresses: [
+                '*'
+              ]
+              destinationAddresses: [
+                '*'
+              ]
+              sourceIpGroups: []
+              destinationIpGroups: []
+              destinationFqdns: []
+              destinationPorts: [
+                '*'
+              ]
+            }            
+            {
               name: 'Metastore IP'
               protocols: [
                 'TCP'
