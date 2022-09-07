@@ -10,7 +10,7 @@ adbResourceId="X-Databricks-Azure-Workspace-Resource-Id:$ADB_WORKSPACE_ID"
 libraries='[
         {
             "maven": {
-                "coordinates": "au.csiro.aehrc.variant-spark:variant-spark_2.12:0.5.0"
+                "coordinates": "au.csiro.aehrc.variant-spark:variant-spark_2.12:0.5.2"
             }
         },        
         {
