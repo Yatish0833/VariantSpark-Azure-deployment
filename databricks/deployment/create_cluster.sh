@@ -12,7 +12,7 @@ DATABRICKS_CLUSTER_LOG='{
 }'
 
 HAIL_DOCKER_URL='{
-    "url": "projectglow/databricks-hail:0.2.67"
+    "url": "projectglow/databricks-hail:0.2.74"
 }'
 
 # Databricks Auth headers
