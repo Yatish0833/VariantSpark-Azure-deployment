@@ -10,24 +10,14 @@ adbResourceId="X-Databricks-Azure-Workspace-Resource-Id:$ADB_WORKSPACE_ID"
 libraries='[
         {
             "maven": {
-                "coordinates": "au.csiro.aehrc.variant-spark:variant-spark_2.12:0.5.2"
+                "coordinates": "au.csiro.aehrc.variant-spark:variant-spark_2.12:0.5.0"
             }
         },        
         {
             "pypi": {
-            "package": "patsy"
+            "package": "hail==0.2.74"
             }
-        }, 
-        {
-            "pypi": {
-            "package": "seaborn"
-            }
-        },  
-        {
-            "pypi": {
-            "package": "statsmodels"
-            }
-        },                    
+        },   
         {
             "pypi": {
             "package": "variant-spark"

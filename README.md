@@ -16,9 +16,9 @@
   <a href="#license">License</a>
 </p>
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FYatish0833%2FVariantSpark-Azure-deployment%2Fmaster%2Fazuredeploy.json)
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FYatish0833%2FVariantSpark-Azure-deployment%2Fadb_runtime%2Fazuredeploy.json)
 
-[![Visualize](https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/1-CONTRIBUTION-GUIDE/images/visualizebutton.svg?sanitize=true)](http://armviz.io/#/?load=https%3A%2F%2Fraw.githubusercontent.com%2FYatish0833%2FVariantSpark-Azure-deployment%2Fmaster%2Fazuredeploy.json)
+[![Visualize](https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/1-CONTRIBUTION-GUIDE/images/visualizebutton.svg?sanitize=true)](http://armviz.io/#/?load=https%3A%2F%2Fraw.githubusercontent.com%2FYatish0833%2FVariantSpark-Azure-deployment%2Fadb_runtime%2Fazuredeploy.json)
 
 ## Why Bicep?
 
@@ -78,7 +78,7 @@ To clone and run this repo, you'll need [Git](https://git-scm.com), [Bicep](http
 From your command line:
 
 ### Option 1:
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FYatish0833%2FVariantSpark-Azure-deployment%2Fmaster%2Fazuredeploy.json)
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FYatish0833%2FVariantSpark-Azure-deployment%2Fadb_runtime%2Fazuredeploy.json)
 
 Click on the above link to deploy the template.
 

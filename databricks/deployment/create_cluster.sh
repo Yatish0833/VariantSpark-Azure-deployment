@@ -11,9 +11,6 @@ DATABRICKS_CLUSTER_LOG='{
     }
 }'
 
-HAIL_DOCKER_URL='{
-    "url": "projectglow/databricks-hail:0.2.74"
-}'
 
 # Databricks Auth headers
 adbGlobalToken=$(az account get-access-token --resource 2ff814a6-3304-4ab8-85cb-cd0e6f879c1d --output json | jq -r .accessToken)
@@ -34,7 +31,6 @@ CLUSTER_CREATE_JSON_STRING=$(jq -n -c \
     --arg spc "$DATABRICKS_SPARK_CONF" \
     --arg at "$DATABRICKS_AUTO_TERMINATE_MINUTES" \
     --arg cl "$DATABRICKS_CLUSTER_LOG" \
-    --arg hdi "$HAIL_DOCKER_URL" \
     '{cluster_name: $cn,
                     idempotency_token: $cn,
                     spark_version: $sv,
@@ -42,8 +38,7 @@ CLUSTER_CREATE_JSON_STRING=$(jq -n -c \
                     num_workers: ($nw|tonumber),
                     autotermination_minutes: ($at|tonumber),
                     spark_conf: ($spc|fromjson),
-                    cluster_log_conf: ($cl|fromjson),
-                    docker_image: ($hdi|fromjson)
+                    cluster_log_conf: ($cl|fromjson)
                     }')
 
 json=$(echo $CLUSTER_CREATE_JSON_STRING | curl -sS -X POST -H "$authHeader" -H "$adbSPMgmtToken" -H "$adbResourceId" --data-binary "@-" "https://${ADB_WORKSPACE_URL}/api/2.0/clusters/create")

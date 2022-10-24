@@ -12,8 +12,7 @@ echo "Download Sample notebooks"
 mkdir -p notebooks && cd notebooks
 curl -L \
     -O "https://raw.githubusercontent.com/aehrc/VariantSpark/master/examples/run_importance_chr22_with_hail.ipynb" \
-    -O "https://raw.githubusercontent.com/aehrc/VariantSpark/3ddcad2ec49922030c762757e82ccbabe6a15903/examples/run_importance_chr22.ipynb" \
-    -O "https://github.com/aehrc/VariantSpark/blob/master/dev-notebooks/HipsterHailvsVS_covariates.ipynb"
+    -O "https://raw.githubusercontent.com/aehrc/VariantSpark/3ddcad2ec49922030c762757e82ccbabe6a15903/examples/run_importance_chr22.ipynb"
 cd $USER_FOLDER
 
 echo "Upload Sample notebooks"
@@ -33,10 +32,7 @@ echo "Download Sample Data"
 mkdir -p data && cd data
 curl -L \
     -O "https://raw.githubusercontent.com/aehrc/VariantSpark/master/data/chr22_1000.vcf" \
-    -O "https://raw.githubusercontent.com/aehrc/VariantSpark/master/data/chr22-labels.csv" \
-    -O "https://raw.githubusercontent.com/aehrc/VariantSpark/master/data/chr22-labels-hail.csv" \
-    -O "https://github.com/aehrc/VariantSpark/raw/master/data/hipsterIndex/hipster.vcf.bgz" \
-    -O "https://github.com/aehrc/VariantSpark/raw/master/data/hipsterIndex/hipster_labels_covariates.txt"
+    -O "https://raw.githubusercontent.com/aehrc/VariantSpark/master/data/chr22-labels.csv"
     
 cd $USER_FOLDER
 
@@ -51,5 +47,5 @@ for file in data/*.*; do
         --form overwrite=true
 done
 
-echo "Enable Container Services"
-curl -sS -X PATCH -H "$authHeader" -H "$adbSPMgmtToken" -H "$adbResourceId"         https://${ADB_WORKSPACE_URL}/api/2.0/preview/workspace-conf --data '{"enableDcs": "true" }'
+
+
