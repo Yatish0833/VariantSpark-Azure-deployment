@@ -11,7 +11,7 @@ param adb_cluster_name string = 'variantspark-cluster-01'
 param adb_spark_version string = '9.1.x-scala2.12'
 param adb_node_type string = 'Standard_D3_v2'
 param adb_num_worker string = '3'
-param hail_docker_image string = 'projectglow/databricks-hail:0.2.78'
+param hail_docker_image string = 'projectglow/databricks-hail:0.2.74'
 param adb_auto_terminate_min string = '30'
 param LogAWkspId string
 param LogAWkspKey string
