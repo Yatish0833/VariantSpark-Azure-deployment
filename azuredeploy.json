@@ -2648,7 +2648,7 @@
             },
             "adb_cluster_name": {
               "type": "string",
-              "defaultValue": "test-cluster-01"
+              "defaultValue": "variantspark-cluster-01"
             },
             "adb_spark_version": {
               "type": "string",
