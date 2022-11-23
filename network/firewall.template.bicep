@@ -1,5 +1,5 @@
 @description('Azure datacentre Location to deploy the Firewall and IP Address')
-param firewallLocation string = resourceGroup().location
+param firewallLocation string
 
 @description('Name of the IP Address')
 param publicIpAddressName string

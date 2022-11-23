@@ -186,7 +186,8 @@
     "fwRoutingTable": "[format('{0}AdbRoutingTbl', substring(variables('uString'), 0, 6))]",
     "clientPcName": "[format('{0}ClientPc', substring(variables('uString'), 0, 6))]",
     "adbAkvLinkName": "[format('{0}SecretScope', substring(variables('uString'), 0, 6))]",
-    "managedIdentityName": "[format('{0}Identity', substring(variables('uString'), 0, 6))]"
+    "managedIdentityName": "[format('{0}Identity', substring(variables('uString'), 0, 6))]",
+    "azmanagementURI": "[]",
   },
   "resources": [
     {

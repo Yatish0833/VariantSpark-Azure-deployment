@@ -17,7 +17,7 @@ HAIL_DOCKER_URL='{
 
 # Databricks Auth headers
 adbGlobalToken=$(az account get-access-token --resource 2ff814a6-3304-4ab8-85cb-cd0e6f879c1d --output json | jq -r .accessToken)
-azureApiToken=$(az account get-access-token --resource https://management.core.windows.net/ --output json | jq -r .accessToken)
+azureApiToken=$(az account get-access-token --resource $AZ_MANAGEMENT_URI --output json | jq -r .accessToken)
 
 # Create Auth header for Databricks
 authHeader="Authorization: Bearer $adbGlobalToken"

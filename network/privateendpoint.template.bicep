@@ -20,7 +20,7 @@ param vnetName string
 param privateLinkSubnetId string
 
 @description('Privatelink subnet Id')
-param privateLinkLocation string = resourceGroup().location
+param privateLinkLocation string
 
 var privateDnsNameStorage_var = 'privatelink.dfs.${environment().suffixes.storage}'
 var storageAccountPrivateEndpointName_var = '${storageAccountName}privateendpoint'

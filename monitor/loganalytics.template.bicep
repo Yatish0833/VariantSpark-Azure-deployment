@@ -1,5 +1,5 @@
 param logAnalyticsWkspName string = toLower('spark-monitoring-${uniqueString(resourceGroup().name)}')
-param logAnalyticsWkspLocation string = resourceGroup().location
+param logAnalyticsWkspLocation string
 @allowed([
   'Free'
   'Standalone'

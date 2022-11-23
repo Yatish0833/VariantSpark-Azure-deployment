@@ -4,14 +4,14 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.4.451.19169",
-      "templateHash": "8973805188190721166"
+      "version": "0.12.40.16777",
+      "templateHash": "132793545568255282"
     }
   },
   "parameters": {
     "prefix": {
       "type": "string",
-      "defaultValue": "vs",
+      "defaultValue": "arb",
       "metadata": {
         "description": "2-4 chars to prefix the Azure resources, NOTE: no number or symbols"
       },
@@ -33,7 +33,7 @@
     },
     "location": {
       "type": "string",
-      "defaultValue": "[resourceGroup().location]",
+      "defaultValue": "australiaeast",
       "metadata": {
         "description": "Default location of the resources"
       }
@@ -113,7 +113,7 @@
     "logBlobstorageDomains": {
       "type": "array",
       "defaultValue": [
-        "dblogprodausteast.blob.core.windows.net"
+        "[format('dblogprodausteast.blob.{0}', environment().suffixes.storage)]"
       ],
       "metadata": {
         "description": "Australia East ADB log blob"
@@ -150,31 +150,31 @@
     "artifactBlobStoragePrimaryDomains": {
       "type": "array",
       "defaultValue": [
-        "dbartifactsprodauste.blob.core.windows.net",
-        "arprodaustea1.blob.core.windows.net",
-        "arprodaustea2.blob.core.windows.net",
-        "arprodaustea3.blob.core.windows.net",
-        "arprodaustea4.blob.core.windows.net",
-        "arprodaustea5.blob.core.windows.net",
-        "arprodaustea6.blob.core.windows.net",
-        "arprodaustea7.blob.core.windows.net",
-        "arprodaustea8.blob.core.windows.net",
-        "arprodaustea9.blob.core.windows.net",
-        "arprodaustea10.blob.core.windows.net",
-        "arprodaustea11.blob.core.windows.net",
-        "arprodaustea12.blob.core.windows.net",
-        "arprodaustea13.blob.core.windows.net",
-        "arprodaustea14.blob.core.windows.net",
-        "arprodaustea15.blob.core.windows.net"
+        "[format('dbartifactsprodauste.blob.{0}', environment().suffixes.storage)]",
+        "[format('arprodaustea1.blob.{0}', environment().suffixes.storage)]",
+        "[format('arprodaustea2.blob.{0}', environment().suffixes.storage)]",
+        "[format('arprodaustea3.blob.{0}', environment().suffixes.storage)]",
+        "[format('arprodaustea4.blob.{0}', environment().suffixes.storage)]",
+        "[format('arprodaustea5.blob.{0}', environment().suffixes.storage)]",
+        "[format('arprodaustea6.blob.{0}', environment().suffixes.storage)]",
+        "[format('arprodaustea7.blob.{0}', environment().suffixes.storage)]",
+        "[format('arprodaustea8.blob.{0}', environment().suffixes.storage)]",
+        "[format('arprodaustea9.blob.{0}', environment().suffixes.storage)]",
+        "[format('arprodaustea10.blob.{0}', environment().suffixes.storage)]",
+        "[format('arprodaustea11.blob.{0}', environment().suffixes.storage)]",
+        "[format('arprodaustea12.blob.{0}', environment().suffixes.storage)]",
+        "[format('arprodaustea13.blob.{0}', environment().suffixes.storage)]",
+        "[format('arprodaustea14.blob.{0}', environment().suffixes.storage)]",
+        "[format('arprodaustea15.blob.{0}', environment().suffixes.storage)]",
+        "[format('dbartifactsprodaustse.blob.{0}', environment().suffixes.storage)]"
       ],
       "metadata": {
         "description": "Australia East Artifacts Blob"
       }
     }
   },
-  "functions": [],
   "variables": {
-    "uniqueSubString": "[uniqueString(guid(subscription().subscriptionId))]",
+    "uniqueSubString": "[format('{0}', uniqueString(guid(subscription().subscriptionId)))]",
     "uString": "[format('{0}{1}', parameters('prefix'), variables('uniqueSubString'))]",
     "storageAccountName": "[format('{0}stg01', substring(variables('uString'), 0, 10))]",
     "keyVaultName": "[format('{0}akv00', substring(variables('uString'), 0, 6))]",
@@ -186,7 +186,8 @@
     "fwRoutingTable": "[format('{0}AdbRoutingTbl', substring(variables('uString'), 0, 6))]",
     "clientPcName": "[format('{0}ClientPc', substring(variables('uString'), 0, 6))]",
     "adbAkvLinkName": "[format('{0}SecretScope', substring(variables('uString'), 0, 6))]",
-    "managedIdentityName": "[format('{0}Identity', substring(variables('uString'), 0, 6))]"
+    "managedIdentityName": "[format('{0}Identity', substring(variables('uString'), 0, 6))]",
+    "azmanagementURI": "[environment().resourceManager]"
   },
   "resources": [
     {
@@ -197,7 +198,7 @@
     },
     {
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-05-01",
+      "apiVersion": "2020-10-01",
       "name": "ManagedIdentity",
       "resourceGroup": "[variables('resourceGroupName')]",
       "properties": {
@@ -219,8 +220,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.4.451.19169",
-              "templateHash": "291692352024343909"
+              "version": "0.12.40.16777",
+              "templateHash": "12935506339953776491"
             }
           },
           "parameters": {
@@ -231,24 +232,23 @@
               "type": "string"
             }
           },
-          "functions": [],
           "variables": {
             "ownerRoleDefId": "8e3af657-a8ff-443c-a75c-2fe8c4bcb635"
           },
           "resources": [
             {
               "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
-              "apiVersion": "2022-05-01",
+              "apiVersion": "2018-11-30",
               "name": "[parameters('managedIdentityName')]",
               "location": "[parameters('location')]"
             },
             {
               "type": "Microsoft.Authorization/roleAssignments",
-              "apiVersion": "2022-05-01-preview",
+              "apiVersion": "2020-08-01-preview",
               "name": "[guid(variables('ownerRoleDefId'), resourceGroup().id)]",
               "properties": {
                 "principalType": "ServicePrincipal",
-                "principalId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName'))).principalId]",
+                "principalId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName')), '2018-11-30').principalId]",
                 "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', variables('ownerRoleDefId'))]"
               },
               "dependsOn": [
@@ -263,7 +263,7 @@
             },
             "mIdentityClientId": {
               "type": "string",
-              "value": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName'))).clientId]"
+              "value": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName')), '2018-11-30').clientId]"
             }
           }
         }
@@ -274,7 +274,7 @@
     },
     {
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-05-01",
+      "apiVersion": "2020-10-01",
       "name": "NetworkSecurityGroup",
       "resourceGroup": "[variables('resourceGroupName')]",
       "properties": {
@@ -285,6 +285,9 @@
         "parameters": {
           "securityGroupName": {
             "value": "[variables('nsgName')]"
+          },
+          "securityGroupLocation": {
+            "value": "[parameters('location')]"
           }
         },
         "template": {
@@ -293,8 +296,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.4.451.19169",
-              "templateHash": "14650343605383017212"
+              "version": "0.12.40.16777",
+              "templateHash": "3171797932473002146"
             }
           },
           "parameters": {
@@ -306,17 +309,15 @@
             },
             "securityGroupLocation": {
               "type": "string",
-              "defaultValue": "[resourceGroup().location]",
               "metadata": {
                 "description": "Location for all resources."
               }
             }
           },
-          "functions": [],
           "resources": [
             {
               "type": "Microsoft.Network/networkSecurityGroups",
-              "apiVersion": "2022-05-01",
+              "apiVersion": "2020-05-01",
               "name": "[parameters('securityGroupName')]",
               "location": "[parameters('securityGroupLocation')]",
               "properties": {
@@ -390,6 +391,20 @@
                       "priority": 103,
                       "direction": "Outbound"
                     }
+                  },
+                  {
+                    "name": "Microsoft.Databricks-workspaces_UseOnly_databricks-worker-to-eventhub",
+                    "properties": {
+                      "description": "Required for worker communication with Azure Eventhub services.",
+                      "protocol": "Tcp",
+                      "sourcePortRange": "*",
+                      "destinationPortRange": "9093",
+                      "sourceAddressPrefix": "VirtualNetwork",
+                      "destinationAddressPrefix": "EventHub",
+                      "access": "Allow",
+                      "priority": 104,
+                      "direction": "Outbound"
+                    }
                   }
                 ]
               }
@@ -409,7 +424,7 @@
     },
     {
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-05-01",
+      "apiVersion": "2020-10-01",
       "name": "RouteTable",
       "resourceGroup": "[variables('resourceGroupName')]",
       "properties": {
@@ -420,6 +435,9 @@
         "parameters": {
           "routeTableName": {
             "value": "[variables('fwRoutingTable')]"
+          },
+          "routeTableLocation": {
+            "value": "[parameters('location')]"
           }
         },
         "template": {
@@ -428,14 +446,13 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.4.451.19169",
-              "templateHash": "7474072428117046757"
+              "version": "0.12.40.16777",
+              "templateHash": "3291004983871134737"
             }
           },
           "parameters": {
             "routeTableLocation": {
               "type": "string",
-              "defaultValue": "[resourceGroup().location]",
               "metadata": {
                 "description": "Azure datacentre Location to deploy the Firewall and IP Address"
               }
@@ -447,11 +464,10 @@
               }
             }
           },
-          "functions": [],
           "resources": [
             {
               "type": "Microsoft.Network/routeTables",
-              "apiVersion": "2022-05-01",
+              "apiVersion": "2020-08-01",
               "name": "[parameters('routeTableName')]",
               "location": "[parameters('routeTableLocation')]",
               "properties": {
@@ -473,7 +489,7 @@
     },
     {
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-05-01",
+      "apiVersion": "2020-10-01",
       "name": "HubandSpokeVnets",
       "resourceGroup": "[variables('resourceGroupName')]",
       "properties": {
@@ -489,10 +505,10 @@
             "value": "[parameters('spokeVnetName')]"
           },
           "routeTableName": {
-            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('resourceGroupName')), 'Microsoft.Resources/deployments', 'RouteTable'), '2019-10-01').outputs.routeTblName.value]"
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('resourceGroupName')), 'Microsoft.Resources/deployments', 'RouteTable'), '2020-10-01').outputs.routeTblName.value]"
           },
           "securityGroupName": {
-            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('resourceGroupName')), 'Microsoft.Resources/deployments', 'NetworkSecurityGroup'), '2019-10-01').outputs.nsgName.value]"
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('resourceGroupName')), 'Microsoft.Resources/deployments', 'NetworkSecurityGroup'), '2020-10-01').outputs.nsgName.value]"
           },
           "firewallSubnetCidr": {
             "value": "[parameters('FirewallSubnetCidr')]"
@@ -514,6 +530,9 @@
           },
           "clinetDevicesSubnetCidr": {
             "value": "[parameters('clientDevicesSubnetCidr')]"
+          },
+          "vnetLocation": {
+            "value": "[parameters('location')]"
           }
         },
         "template": {
@@ -522,8 +541,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.4.451.19169",
-              "templateHash": "11449947211684753628"
+              "version": "0.12.40.16777",
+              "templateHash": "6379388911897052031"
             }
           },
           "parameters": {
@@ -581,7 +600,6 @@
             },
             "vnetLocation": {
               "type": "string",
-              "defaultValue": "[resourceGroup().location]",
               "metadata": {
                 "description": "Location for all resources."
               }
@@ -622,19 +640,17 @@
                 "description": "Cidr range for the private link subnet.."
               }
             },
-
             "clinetDevicesSubnetCidr": {
               "type": "string"
             }
           },
-          "functions": [],
           "variables": {
             "securityGroupId": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('securityGroupName'))]"
           },
           "resources": [
             {
               "type": "Microsoft.Network/virtualNetworks",
-              "apiVersion": "2022-05-01",
+              "apiVersion": "2020-08-01",
               "name": "[parameters('hubVnetName')]",
               "location": "[parameters('vnetLocation')]",
               "properties": {
@@ -672,7 +688,7 @@
             },
             {
               "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
-              "apiVersion": "2022-05-01",
+              "apiVersion": "2020-08-01",
               "name": "[format('{0}/{1}', parameters('hubVnetName'), 'Peer-HubSpoke')]",
               "properties": {
                 "allowVirtualNetworkAccess": true,
@@ -690,7 +706,7 @@
             },
             {
               "type": "Microsoft.Network/virtualNetworks",
-              "apiVersion": "2022-05-01",
+              "apiVersion": "2020-08-01",
               "name": "[parameters('spokeVnetName')]",
               "location": "[parameters('vnetLocation')]",
               "properties": {
@@ -714,7 +730,7 @@
                         {
                           "service": "Microsoft.Storage",
                           "locations": [
-                            "[resourceGroup().location]"
+                            "[parameters('vnetLocation')]"
                           ]
                         }
                       ],
@@ -763,7 +779,7 @@
             },
             {
               "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
-              "apiVersion": "2022-05-01",
+              "apiVersion": "2020-08-01",
               "name": "[format('{0}/{1}', parameters('spokeVnetName'), 'Peer-SpokeHub')]",
               "properties": {
                 "allowVirtualNetworkAccess": true,
@@ -808,7 +824,7 @@
     },
     {
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-05-01",
+      "apiVersion": "2020-10-01",
       "name": "StorageAccount",
       "resourceGroup": "[variables('resourceGroupName')]",
       "properties": {
@@ -821,7 +837,10 @@
             "value": "[variables('storageAccountName')]"
           },
           "databricksPublicSubnetId": {
-            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('resourceGroupName')), 'Microsoft.Resources/deployments', 'HubandSpokeVnets'), '2019-10-01').outputs.databricksPublicSubnetId.value]"
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('resourceGroupName')), 'Microsoft.Resources/deployments', 'HubandSpokeVnets'), '2020-10-01').outputs.databricksPublicSubnetId.value]"
+          },
+          "storageLocation": {
+            "value": "[parameters('location')]"
           }
         },
         "template": {
@@ -830,8 +849,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.4.451.19169",
-              "templateHash": "17508896932927189187"
+              "version": "0.12.40.16777",
+              "templateHash": "1392698962068617256"
             }
           },
           "parameters": {
@@ -863,6 +882,9 @@
                 "Premium_LRS"
               ]
             },
+            "storageLocation": {
+              "type": "string"
+            },
             "encryptionEnabled": {
               "type": "bool",
               "defaultValue": true,
@@ -871,20 +893,16 @@
               }
             }
           },
-          "functions": [],
-          "variables": {
-            "location": "[resourceGroup().location]"
-          },
           "resources": [
             {
               "type": "Microsoft.Storage/storageAccounts",
-              "apiVersion": "2022-05-01",
+              "apiVersion": "2019-06-01",
               "name": "[parameters('storageAccountName')]",
               "tags": {
                 "displayName": "[parameters('storageAccountName')]",
                 "type": "Storage"
               },
-              "location": "[variables('location')]",
+              "location": "[parameters('storageLocation')]",
               "kind": "StorageV2",
               "properties": {
                 "isHnsEnabled": true,
@@ -921,7 +939,7 @@
             },
             {
               "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
-              "apiVersion": "2022-05-01",
+              "apiVersion": "2019-06-01",
               "name": "[format('{0}/default/{1}', parameters('storageAccountName'), parameters('storageContainerName'))]",
               "dependsOn": [
                 "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName'))]"
@@ -951,7 +969,7 @@
     },
     {
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-05-01",
+      "apiVersion": "2020-10-01",
       "name": "DatabricksWorkspace",
       "resourceGroup": "[variables('resourceGroupName')]",
       "properties": {
@@ -961,13 +979,16 @@
         "mode": "Incremental",
         "parameters": {
           "vnetName": {
-            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('resourceGroupName')), 'Microsoft.Resources/deployments', 'HubandSpokeVnets'), '2019-10-01').outputs.spokeVnetName.value]"
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('resourceGroupName')), 'Microsoft.Resources/deployments', 'HubandSpokeVnets'), '2020-10-01').outputs.spokeVnetName.value]"
           },
           "adbWorkspaceSkuTier": {
             "value": "premium"
           },
           "adbWorkspaceName": {
             "value": "[variables('adbWorkspaceName')]"
+          },
+          "adbWorkspaceLocation": {
+            "value": "[parameters('location')]"
           }
         },
         "template": {
@@ -976,8 +997,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.4.451.19169",
-              "templateHash": "8350828606960493073"
+              "version": "0.12.40.16777",
+              "templateHash": "3098539625840297502"
             }
           },
           "parameters": {
@@ -1020,7 +1041,6 @@
             },
             "adbWorkspaceLocation": {
               "type": "string",
-              "defaultValue": "[resourceGroup().location]",
               "metadata": {
                 "description": ""
               }
@@ -1039,7 +1059,6 @@
               }
             }
           },
-          "functions": [],
           "variables": {
             "managedResourceGroupName": "[format('databricks-rg-{0}-{1}', parameters('adbWorkspaceName'), uniqueString(parameters('adbWorkspaceName'), resourceGroup().id))]",
             "managedResourceGroupId": "[format('{0}/resourceGroups/{1}', subscription().id, variables('managedResourceGroupName'))]",
@@ -1048,7 +1067,7 @@
           "resources": [
             {
               "type": "Microsoft.Databricks/workspaces",
-              "apiVersion": "2022-05-01",
+              "apiVersion": "2018-04-01",
               "name": "[parameters('adbWorkspaceName')]",
               "location": "[parameters('adbWorkspaceLocation')]",
               "sku": {
@@ -1081,11 +1100,11 @@
             },
             "databricks_workspaceUrl": {
               "type": "string",
-              "value": "[reference(resourceId('Microsoft.Databricks/workspaces', parameters('adbWorkspaceName'))).workspaceUrl]"
+              "value": "[reference(resourceId('Microsoft.Databricks/workspaces', parameters('adbWorkspaceName')), '2018-04-01').workspaceUrl]"
             },
             "databricks_dbfs_storage_accountName": {
               "type": "string",
-              "value": "[reference(resourceId('Microsoft.Databricks/workspaces', parameters('adbWorkspaceName'))).parameters.storageAccountName.value]"
+              "value": "[reference(resourceId('Microsoft.Databricks/workspaces', parameters('adbWorkspaceName')), '2018-04-01').parameters.storageAccountName.value]"
             }
           }
         }
@@ -1097,7 +1116,7 @@
     },
     {
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-05-01",
+      "apiVersion": "2020-10-01",
       "name": "HubFirewall",
       "resourceGroup": "[variables('resourceGroupName')]",
       "properties": {
@@ -1109,11 +1128,14 @@
           "firewallName": {
             "value": "[variables('firewallName')]"
           },
+          "firewallLocation": {
+            "value": "[parameters('location')]"
+          },
           "publicIpAddressName": {
             "value": "[variables('firewallPublicIpName')]"
           },
           "vnetName": {
-            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('resourceGroupName')), 'Microsoft.Resources/deployments', 'HubandSpokeVnets'), '2019-10-01').outputs.hubVnetName.value]"
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('resourceGroupName')), 'Microsoft.Resources/deployments', 'HubandSpokeVnets'), '2020-10-01').outputs.hubVnetName.value]"
           },
           "webappDestinationAddresses": {
             "value": "[parameters('webappDestinationAddresses')]"
@@ -1134,10 +1156,10 @@
             "value": "[parameters('artifactBlobStoragePrimaryDomains')]"
           },
           "dbfsBlobStrageDomain": {
-            "value": "[array(format('{0}.blob.{1}', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('resourceGroupName')), 'Microsoft.Resources/deployments', 'DatabricksWorkspace'), '2019-10-01').outputs.databricks_dbfs_storage_accountName.value, environment().suffixes.storage))]"
+            "value": "[array(format('{0}.blob.{1}', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('resourceGroupName')), 'Microsoft.Resources/deployments', 'DatabricksWorkspace'), '2020-10-01').outputs.databricks_dbfs_storage_accountName.value, environment().suffixes.storage))]"
           },
           "clientPrivateIpAddr": {
-            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('resourceGroupName')), 'Microsoft.Resources/deployments', 'ClientPC'), '2019-10-01').outputs.clientPrivateIpaddr.value]"
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('resourceGroupName')), 'Microsoft.Resources/deployments', 'ClientPC'), '2020-10-01').outputs.clientPrivateIpaddr.value]"
           }
         },
         "template": {
@@ -1146,14 +1168,13 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.4.451.19169",
-              "templateHash": "12390420139180770216"
+              "version": "0.12.40.16777",
+              "templateHash": "8284316055533729101"
             }
           },
           "parameters": {
             "firewallLocation": {
               "type": "string",
-              "defaultValue": "[resourceGroup().location]",
               "metadata": {
                 "description": "Azure datacentre Location to deploy the Firewall and IP Address"
               }
@@ -1246,11 +1267,10 @@
               }
             }
           },
-          "functions": [],
           "resources": [
             {
               "type": "Microsoft.Network/publicIPAddresses",
-              "apiVersion": "2022-05-01",
+              "apiVersion": "2021-02-01",
               "name": "[parameters('publicIpAddressName')]",
               "location": "[parameters('firewallLocation')]",
               "sku": {
@@ -1262,7 +1282,7 @@
             },
             {
               "type": "Microsoft.Network/azureFirewalls",
-              "apiVersion": "2022-05-01",
+              "apiVersion": "2021-02-01",
               "name": "[parameters('firewallName')]",
               "location": "[parameters('firewallLocation')]",
               "properties": {
@@ -1309,7 +1329,7 @@
                             "*"
                           ],
                           "destinationAddresses": [
-                            "[reference(resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIpAddressName'))).ipAddress]"
+                            "[reference(resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIpAddressName')), '2021-02-01').ipAddress]"
                           ],
                           "destinationPorts": [
                             "3389"
@@ -1355,6 +1375,24 @@
                             "*"
                           ],
                           "destinationAddresses": "[parameters('infrastructureDestinationAddresses')]",
+                          "sourceIpGroups": [],
+                          "destinationIpGroups": [],
+                          "destinationFqdns": [],
+                          "destinationPorts": [
+                            "*"
+                          ]
+                        },
+                        {
+                          "name": "Coverall",
+                          "protocols": [
+                            "TCP"
+                          ],
+                          "sourceAddresses": [
+                            "*"
+                          ],
+                          "destinationAddresses": [
+                            "*"
+                          ],
                           "sourceIpGroups": [],
                           "destinationIpGroups": [],
                           "destinationFqdns": [],
@@ -1581,8 +1619,8 @@
                           ],
                           "fqdnTags": [],
                           "targetFqdns": [
-                            "[replace(replace(environment().authentication.loginEndpoint, 'https:', ''), '/', '')]",
-                            "[replace(replace(environment().resourceManager, 'https:', ''), '/', '')]",
+                            "[format('{0}', replace(replace(environment().authentication.loginEndpoint, 'https:', ''), '/', ''))]",
+                            "[format('{0}', replace(replace(environment().resourceManager, 'https:', ''), '/', ''))]",
                             "[format('*.blob.{0}', environment().suffixes.storage)]",
                             "*.azure-automation.net",
                             "ml.azure.com",
@@ -1606,7 +1644,7 @@
           "outputs": {
             "firewallPrivateIp": {
               "type": "string",
-              "value": "[reference(resourceId('Microsoft.Network/azureFirewalls', parameters('firewallName'))).ipConfigurations[0].properties.privateIPAddress]"
+              "value": "[reference(resourceId('Microsoft.Network/azureFirewalls', parameters('firewallName')), '2021-02-01').ipConfigurations[0].properties.privateIPAddress]"
             }
           }
         }
@@ -1620,7 +1658,7 @@
     },
     {
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-05-01",
+      "apiVersion": "2020-10-01",
       "name": "RouteTableUpdate",
       "resourceGroup": "[variables('resourceGroupName')]",
       "properties": {
@@ -1633,7 +1671,7 @@
             "value": "[variables('fwRoutingTable')]"
           },
           "firewallPrivateIp": {
-            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('resourceGroupName')), 'Microsoft.Resources/deployments', 'HubFirewall'), '2019-10-01').outputs.firewallPrivateIp.value]"
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('resourceGroupName')), 'Microsoft.Resources/deployments', 'HubFirewall'), '2020-10-01').outputs.firewallPrivateIp.value]"
           }
         },
         "template": {
@@ -1642,8 +1680,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.4.451.19169",
-              "templateHash": "17467792457559355397"
+              "version": "0.12.40.16777",
+              "templateHash": "15980771821299120166"
             }
           },
           "parameters": {
@@ -1654,11 +1692,10 @@
               "type": "string"
             }
           },
-          "functions": [],
           "resources": [
             {
               "type": "Microsoft.Network/routeTables/routes",
-              "apiVersion": "2022-05-01",
+              "apiVersion": "2020-08-01",
               "name": "[format('{0}/Firewall-Route', parameters('routeTableName'))]",
               "properties": {
                 "addressPrefix": "0.0.0.0/0",
@@ -1677,7 +1714,7 @@
     },
     {
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-05-01",
+      "apiVersion": "2020-10-01",
       "name": "KeyVault",
       "resourceGroup": "[variables('resourceGroupName')]",
       "properties": {
@@ -1690,7 +1727,10 @@
             "value": "[variables('keyVaultName')]"
           },
           "objectId": {
-            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('resourceGroupName')), 'Microsoft.Resources/deployments', 'ManagedIdentity'), '2019-10-01').outputs.mIdentityClientId.value]"
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('resourceGroupName')), 'Microsoft.Resources/deployments', 'ManagedIdentity'), '2020-10-01').outputs.mIdentityClientId.value]"
+          },
+          "keyVaultLocation": {
+            "value": "[parameters('location')]"
           }
         },
         "template": {
@@ -1699,8 +1739,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.4.451.19169",
-              "templateHash": "16023483034167971529"
+              "version": "0.12.40.16777",
+              "templateHash": "17707956422092671685"
             }
           },
           "parameters": {
@@ -1712,7 +1752,6 @@
             },
             "keyVaultLocation": {
               "type": "string",
-              "defaultValue": "[resourceGroup().location]",
               "metadata": {
                 "description": "Specifies the Azure location where the key vault should be created."
               }
@@ -1744,22 +1783,7 @@
               "defaultValue": true,
               "metadata": {
                 "description": "Specifies whether protection against purge is enabled for this vault."
-              },
-              "allowedValues": [
-                true,
-                false
-              ]
-            },
-            "enableSoftDelete": {
-              "type": "bool",
-              "defaultValue": true,
-              "metadata": {
-                "description": "Specifies whether protection against deletion is enabled for this vault."
-              },
-              "allowedValues": [
-                true,
-                false
-              ]
+              }
             },
             "tenantId": {
               "type": "string",
@@ -1790,18 +1814,16 @@
               "defaultValue": {}
             }
           },
-          "functions": [],
           "resources": [
             {
               "type": "Microsoft.KeyVault/vaults",
-              "apiVersion": "2022-07-01",
+              "apiVersion": "2019-09-01",
               "name": "[parameters('keyVaultName')]",
               "location": "[parameters('keyVaultLocation')]",
               "properties": {
                 "enabledForDeployment": "[parameters('enabledForDeployment')]",
                 "enabledForTemplateDeployment": "[parameters('enabledForTemplateDeployment')]",
                 "enablePurgeProtection": "[parameters('enablePurgeProtection')]",
-                "enableSoftDelete" : "[parameters('enableSoftDelete')]",
                 "tenantId": "[parameters('tenantId')]",
                 "accessPolicies": [
                   {
@@ -1838,7 +1860,7 @@
             },
             "keyvault_uri": {
               "type": "string",
-              "value": "[reference(resourceId('Microsoft.KeyVault/vaults', parameters('keyVaultName'))).vaultUri]"
+              "value": "[reference(resourceId('Microsoft.KeyVault/vaults', parameters('keyVaultName')), '2019-09-01').vaultUri]"
             }
           }
         }
@@ -1850,7 +1872,7 @@
     },
     {
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-05-01",
+      "apiVersion": "2020-10-01",
       "name": "ClientPC",
       "resourceGroup": "[variables('resourceGroupName')]",
       "properties": {
@@ -1866,10 +1888,13 @@
             "value": "[parameters('adminPassword')]"
           },
           "vnetName": {
-            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('resourceGroupName')), 'Microsoft.Resources/deployments', 'HubandSpokeVnets'), '2019-10-01').outputs.hubVnetName.value]"
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('resourceGroupName')), 'Microsoft.Resources/deployments', 'HubandSpokeVnets'), '2020-10-01').outputs.hubVnetName.value]"
           },
           "clientPcName": {
             "value": "[variables('clientPcName')]"
+          },
+          "location": {
+            "value": "[parameters('location')]"
           }
         },
         "template": {
@@ -1878,8 +1903,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.4.451.19169",
-              "templateHash": "2261674643804813549"
+              "version": "0.12.40.16777",
+              "templateHash": "12276894525335765587"
             }
           },
           "parameters": {
@@ -1924,7 +1949,6 @@
             },
             "location": {
               "type": "string",
-              "defaultValue": "[resourceGroup().location]",
               "metadata": {
                 "description": ""
               }
@@ -1936,7 +1960,6 @@
               }
             }
           },
-          "functions": [],
           "variables": {
             "networkInterfaceName": "[format('{0}-Iface', parameters('clientPcName'))]",
             "virtualMachineName": "[parameters('clientPcName')]",
@@ -1945,7 +1968,7 @@
           "resources": [
             {
               "type": "Microsoft.Network/networkInterfaces",
-              "apiVersion": "2022-05-01",
+              "apiVersion": "2018-10-01",
               "name": "[variables('networkInterfaceName')]",
               "location": "[parameters('location')]",
               "properties": {
@@ -1964,7 +1987,7 @@
             },
             {
               "type": "Microsoft.Compute/virtualMachines",
-              "apiVersion": "2022-05-01",
+              "apiVersion": "2021-03-01",
               "name": "[variables('virtualMachineName')]",
               "location": "[parameters('location')]",
               "properties": {
@@ -2032,7 +2055,7 @@
     },
     {
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-05-01",
+      "apiVersion": "2020-10-01",
       "name": "LogAnalytics",
       "resourceGroup": "[variables('resourceGroupName')]",
       "properties": {
@@ -2040,14 +2063,19 @@
           "scope": "inner"
         },
         "mode": "Incremental",
+        "parameters": {
+          "logAnalyticsWkspLocation": {
+            "value": "[parameters('location')]"
+          }
+        },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
           "contentVersion": "1.0.0.0",
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.4.451.19169",
-              "templateHash": "17464467236990382912"
+              "version": "0.12.40.16777",
+              "templateHash": "4268246877246362725"
             }
           },
           "parameters": {
@@ -2056,8 +2084,7 @@
               "defaultValue": "[toLower(format('spark-monitoring-{0}', uniqueString(resourceGroup().name)))]"
             },
             "logAnalyticsWkspLocation": {
-              "type": "string",
-              "defaultValue": "[resourceGroup().location]"
+              "type": "string"
             },
             "logAnalyticsWkspSku": {
               "type": "string",
@@ -2082,7 +2109,6 @@
               "minValue": 7
             }
           },
-          "functions": [],
           "variables": {
             "queries": [
               {
@@ -2254,7 +2280,7 @@
           "resources": [
             {
               "type": "Microsoft.OperationalInsights/workspaces",
-              "apiVersion": "2022-10-01",
+              "apiVersion": "2020-10-01",
               "name": "[parameters('logAnalyticsWkspName')]",
               "location": "[parameters('logAnalyticsWkspLocation')]",
               "properties": {
@@ -2273,7 +2299,7 @@
                 "count": "[length(variables('queries'))]"
               },
               "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
-              "apiVersion": "2022-10-01",
+              "apiVersion": "2020-08-01",
               "name": "[format('{0}/{1}', parameters('logAnalyticsWkspName'), guid(format('{0}{1}{2}', resourceGroup().id, deployment().name, copyIndex())))]",
               "properties": {
                 "category": "Spark Metrics",
@@ -2290,7 +2316,7 @@
           "outputs": {
             "logAnalyticsWkspId": {
               "type": "string",
-              "value": "[reference(resourceId('Microsoft.OperationalInsights/workspaces', parameters('logAnalyticsWkspName'))).customerId]"
+              "value": "[reference(resourceId('Microsoft.OperationalInsights/workspaces', parameters('logAnalyticsWkspName')), '2020-10-01').customerId]"
             },
             "primarySharedKey": {
               "type": "string",
@@ -2309,7 +2335,7 @@
     },
     {
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-05-01",
+      "apiVersion": "2020-10-01",
       "name": "PrivateEndPoints",
       "resourceGroup": "[variables('resourceGroupName')]",
       "properties": {
@@ -2322,19 +2348,22 @@
             "value": "KeyVault"
           },
           "keyvaultPrivateLinkResource": {
-            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('resourceGroupName')), 'Microsoft.Resources/deployments', 'KeyVault'), '2019-10-01').outputs.keyvault_id.value]"
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('resourceGroupName')), 'Microsoft.Resources/deployments', 'KeyVault'), '2020-10-01').outputs.keyvault_id.value]"
           },
           "privateLinkSubnetId": {
-            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('resourceGroupName')), 'Microsoft.Resources/deployments', 'HubandSpokeVnets'), '2019-10-01').outputs.privatelinksubnet_id.value]"
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('resourceGroupName')), 'Microsoft.Resources/deployments', 'HubandSpokeVnets'), '2020-10-01').outputs.privatelinksubnet_id.value]"
           },
           "storageAccountName": {
             "value": "StorageAccount"
           },
           "storageAccountPrivateLinkResource": {
-            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('resourceGroupName')), 'Microsoft.Resources/deployments', 'StorageAccount'), '2019-10-01').outputs.storageaccount_id.value]"
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('resourceGroupName')), 'Microsoft.Resources/deployments', 'StorageAccount'), '2020-10-01').outputs.storageaccount_id.value]"
           },
           "vnetName": {
-            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('resourceGroupName')), 'Microsoft.Resources/deployments', 'HubandSpokeVnets'), '2019-10-01').outputs.spokeVnetName.value]"
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('resourceGroupName')), 'Microsoft.Resources/deployments', 'HubandSpokeVnets'), '2020-10-01').outputs.spokeVnetName.value]"
+          },
+          "privateLinkLocation": {
+            "value": "[parameters('location')]"
           }
         },
         "template": {
@@ -2343,8 +2372,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.4.451.19169",
-              "templateHash": "17537020811066953211"
+              "version": "0.12.40.16777",
+              "templateHash": "613392222335574492"
             }
           },
           "parameters": {
@@ -2386,13 +2415,11 @@
             },
             "privateLinkLocation": {
               "type": "string",
-              "defaultValue": "[resourceGroup().location]",
               "metadata": {
                 "description": "Privatelink subnet Id"
               }
             }
           },
-          "functions": [],
           "variables": {
             "targetSubResourceDfs": "dfs",
             "targetSubResourceVault": "vault",
@@ -2404,7 +2431,7 @@
           "resources": [
             {
               "type": "Microsoft.Network/privateEndpoints",
-              "apiVersion": "2022-05-01",
+              "apiVersion": "2021-02-01",
               "name": "[variables('storageAccountPrivateEndpointName_var')]",
               "location": "[parameters('privateLinkLocation')]",
               "properties": {
@@ -2426,7 +2453,7 @@
             },
             {
               "type": "Microsoft.Network/privateDnsZones",
-              "apiVersion": "2022-05-01",
+              "apiVersion": "2020-06-01",
               "name": "[variables('privateDnsNameStorage_var')]",
               "location": "global",
               "tags": {},
@@ -2437,7 +2464,7 @@
             },
             {
               "type": "Microsoft.Network/privateDnsZones/virtualNetworkLinks",
-              "apiVersion": "2022-05-01",
+              "apiVersion": "2020-06-01",
               "name": "[format('{0}/{1}', variables('privateDnsNameStorage_var'), parameters('vnetName'))]",
               "location": "global",
               "properties": {
@@ -2452,7 +2479,7 @@
             },
             {
               "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups",
-              "apiVersion": "2022-05-01",
+              "apiVersion": "2021-02-01",
               "name": "[format('{0}/{1}', variables('storageAccountPrivateEndpointName_var'), 'default')]",
               "properties": {
                 "privateDnsZoneConfigs": [
@@ -2471,7 +2498,7 @@
             },
             {
               "type": "Microsoft.Network/privateEndpoints",
-              "apiVersion": "2022-05-01",
+              "apiVersion": "2021-02-01",
               "name": "[variables('keyvaultPrivateEndpointName_var')]",
               "location": "[parameters('privateLinkLocation')]",
               "properties": {
@@ -2494,7 +2521,7 @@
             },
             {
               "type": "Microsoft.Network/privateDnsZones",
-              "apiVersion": "2022-05-01",
+              "apiVersion": "2020-06-01",
               "name": "[variables('privateDnsNameVault_var')]",
               "location": "global",
               "tags": {},
@@ -2505,7 +2532,7 @@
             },
             {
               "type": "Microsoft.Network/privateDnsZones/virtualNetworkLinks",
-              "apiVersion": "2022-05-01",
+              "apiVersion": "2020-06-01",
               "name": "[format('{0}/{1}', variables('privateDnsNameVault_var'), parameters('vnetName'))]",
               "location": "global",
               "properties": {
@@ -2520,7 +2547,7 @@
             },
             {
               "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups",
-              "apiVersion": "2022-05-01",
+              "apiVersion": "2021-02-01",
               "name": "[format('{0}/{1}', variables('keyvaultPrivateEndpointName_var'), 'default')]",
               "properties": {
                 "privateDnsZoneConfigs": [
@@ -2536,7 +2563,8 @@
                 "[resourceId('Microsoft.Network/privateEndpoints', variables('keyvaultPrivateEndpointName_var'))]",
                 "[resourceId('Microsoft.Network/privateDnsZones', variables('privateDnsNameVault_var'))]"
               ]
-            }          ]
+            }
+          ]
         }
       },
       "dependsOn": [
@@ -2548,7 +2576,7 @@
     },
     {
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-05-01",
+      "apiVersion": "2020-10-01",
       "name": "DatabricksCluster",
       "resourceGroup": "[variables('resourceGroupName')]",
       "properties": {
@@ -2561,31 +2589,34 @@
             "value": "[parameters('location')]"
           },
           "identity": {
-            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('resourceGroupName')), 'Microsoft.Resources/deployments', 'ManagedIdentity'), '2019-10-01').outputs.mIdentityId.value]"
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('resourceGroupName')), 'Microsoft.Resources/deployments', 'ManagedIdentity'), '2020-10-01').outputs.mIdentityId.value]"
           },
           "adb_workspace_url": {
-            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('resourceGroupName')), 'Microsoft.Resources/deployments', 'DatabricksWorkspace'), '2019-10-01').outputs.databricks_workspaceUrl.value]"
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('resourceGroupName')), 'Microsoft.Resources/deployments', 'DatabricksWorkspace'), '2020-10-01').outputs.databricks_workspaceUrl.value]"
           },
           "adb_workspace_id": {
-            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('resourceGroupName')), 'Microsoft.Resources/deployments', 'DatabricksWorkspace'), '2019-10-01').outputs.databricks_workspace_id.value]"
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('resourceGroupName')), 'Microsoft.Resources/deployments', 'DatabricksWorkspace'), '2020-10-01').outputs.databricks_workspace_id.value]"
           },
-          "adb_secret_scope_name": {
+          "adb_scope_name": {
             "value": "[variables('adbAkvLinkName')]"
           },
           "akv_id": {
-            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('resourceGroupName')), 'Microsoft.Resources/deployments', 'KeyVault'), '2019-10-01').outputs.keyvault_id.value]"
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('resourceGroupName')), 'Microsoft.Resources/deployments', 'KeyVault'), '2020-10-01').outputs.keyvault_id.value]"
           },
           "akv_uri": {
-            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('resourceGroupName')), 'Microsoft.Resources/deployments', 'KeyVault'), '2019-10-01').outputs.keyvault_uri.value]"
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('resourceGroupName')), 'Microsoft.Resources/deployments', 'KeyVault'), '2020-10-01').outputs.keyvault_uri.value]"
           },
           "LogAWkspId": {
-            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('resourceGroupName')), 'Microsoft.Resources/deployments', 'LogAnalytics'), '2019-10-01').outputs.logAnalyticsWkspId.value]"
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('resourceGroupName')), 'Microsoft.Resources/deployments', 'LogAnalytics'), '2020-10-01').outputs.logAnalyticsWkspId.value]"
           },
           "LogAWkspKey": {
-            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('resourceGroupName')), 'Microsoft.Resources/deployments', 'LogAnalytics'), '2019-10-01').outputs.primarySharedKey.value]"
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('resourceGroupName')), 'Microsoft.Resources/deployments', 'LogAnalytics'), '2020-10-01').outputs.primarySharedKey.value]"
           },
           "storageKey": {
-            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('resourceGroupName')), 'Microsoft.Resources/deployments', 'StorageAccount'), '2019-10-01').outputs.key1.value]"
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('resourceGroupName')), 'Microsoft.Resources/deployments', 'StorageAccount'), '2020-10-01').outputs.key1.value]"
+          },
+          "azmanagementURI": {
+            "value": "[variables('azmanagementURI')]"
           }
         },
         "template": {
@@ -2594,8 +2625,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.4.451.19169",
-              "templateHash": "9704762865465660923"
+              "version": "0.12.40.16777",
+              "templateHash": "9156388790646746911"
             }
           },
           "parameters": {
@@ -2625,16 +2656,16 @@
             "adb_workspace_id": {
               "type": "string"
             },
-            "adb_secret_scope_name": {
+            "adb_scope_name": {
               "type": "string"
             },
             "adb_cluster_name": {
               "type": "string",
-              "defaultValue": "test-cluster-01"
+              "defaultValue": "variantspark-cluster-01"
             },
             "adb_spark_version": {
               "type": "string",
-              "defaultValue": "10.4.x-scala2.12"
+              "defaultValue": "9.1.x-scala2.12"
             },
             "adb_node_type": {
               "type": "string",
@@ -2643,6 +2674,10 @@
             "adb_num_worker": {
               "type": "string",
               "defaultValue": "3"
+            },
+            "hail_docker_image": {
+              "type": "string",
+              "defaultValue": "projectglow/databricks-hail:0.2.74"
             },
             "adb_auto_terminate_min": {
               "type": "string",
@@ -2656,20 +2691,29 @@
             },
             "storageKey": {
               "type": "string"
+            },
+            "azmanagementURI": {
+              "type": "string"
             }
           },
-          "functions": [],
+          "variables": {
+            "$fxv#0": "#/bin/bash -e\npat_token_config=$(jq -n -c \\\n    --arg ls \"$PAT_LIFETIME\" \\\n    --arg co \"Example Token\" \\\n    '{lifetime_seconds: ($ls|tonumber),\n     comment: $co}')\n\nadbGlobalToken=$(az account get-access-token --resource 2ff814a6-3304-4ab8-85cb-cd0e6f879c1d --output json | jq -r .accessToken)\nazureApiToken=$(az account get-access-token --resource $AZ_MANAGEMENT_URI --output json | jq -r .accessToken)\n\nauthHeader=\"Authorization: Bearer $adbGlobalToken\"\nadbSPMgmtToken=\"X-Databricks-Azure-SP-Management-Token:$azureApiToken\"\nadbResourceId=\"X-Databricks-Azure-Workspace-Resource-Id:$ADB_WORKSPACE_ID\"\njson=$(echo \"$pat_token_config\" | curl -sS -X POST -H \"$authHeader\" -H \"$adbSPMgmtToken\" -H \"$adbResourceId\" --data-binary \"@-\" \"https://${ADB_WORKSPACE_URL}/api/2.0/token/create\")\n\necho \"$json\" >\"$AZ_SCRIPTS_OUTPUT_PATH\"",
+            "$fxv#1": "#/bin/bash -e\n\n# TODO: Create AKV backed secret scope using User assigned managed identity. Currently not supported\n# akv_backed='{\"resource_id\": \"'${AKV_ID}'\",\"dns_name\": \"'${AKV_URI}'\"}'\n# akv_secret_scope_payload=$(\n#     jq -n -c \\\n#         --arg sc \"akv_test\" \\\n#         --arg bak \"$akv_backed\" \\\n#         '{\n#         scope: $sc,\n#         scope_backend_type: \"AZURE_KEYVAULT\",\n#         initial_manage_principal: \"users\",\n#         backend_azure_keyvault: ($bak|fromjson)\n#      }'\n# )\n\n# Create secret scope backed by ADB\nadb_secret_scope_payload=$(\n    jq -n -c \\\n        --arg sc \"$ADB_SECRET_SCOPE_NAME\" \\\n        '{\n        scope: $sc,\n        initial_manage_principal: \"users\"\n     }'\n)\n\nadbGlobalToken=$(az account get-access-token --resource 2ff814a6-3304-4ab8-85cb-cd0e6f879c1d --output json | jq -r .accessToken)\nazureApiToken=$(az account get-access-token --resource $AZ_MANAGEMENT_URI --output json | jq -r .accessToken)\n\nauthHeader=\"Authorization: Bearer $adbGlobalToken\"\nadbSPMgmtToken=\"X-Databricks-Azure-SP-Management-Token:$azureApiToken\"\nadbResourceId=\"X-Databricks-Azure-Workspace-Resource-Id:$ADB_WORKSPACE_ID\"\n\necho \"Create ADB secret scope backed by Databricks key vault\"\njson=$(echo $adb_secret_scope_payload | curl -sS -X POST -H \"$authHeader\" -H \"$adbSPMgmtToken\" -H \"$adbResourceId\" --data-binary \"@-\" \"https://${ADB_WORKSPACE_URL}/api/2.0/secrets/scopes/create\")\n\nfunction createKey() {\n    local keyName=$1\n    local secretValue=$2\n    json_payload=$(\n        jq -n -c \\\n            --arg sc \"$ADB_SECRET_SCOPE_NAME\" \\\n            --arg k \"$keyName\" \\\n            --arg v \"$secretValue\" \\\n            '{\n            scope: $sc,\n            key: $k,\n            string_value: $v\n        }'\n    )\n    response=$(echo $json_payload | curl -sS -X POST -H \"$authHeader\" -H \"$adbSPMgmtToken\" -H \"$adbResourceId\" --data-binary \"@-\" \"https://${ADB_WORKSPACE_URL}/api/2.0/secrets/put\")\n    echo $response\n\n}\n\ncreateKey \"LogAWkspId\" \"$ADB_LOG_WKSP_ID\"\ncreateKey \"LogAWkspkey\" \"$ADB_LOG_WKSP_KEY\"\nC_ADB_PAT_TOKEN=$(sed -e 's/[\\\"\\\\]//g' <<<$ADB_PAT_TOKEN)\ncreateKey \"dbPATKey\" \"$C_ADB_PAT_TOKEN\"\ncreateKey \"ehKey\" \"$EVENT_HUB_KEY\"\ncreateKey \"stgAccessKey\" \"$STORAGE_ACCESS_KEY\"\n\necho \"$json\" >\"$AZ_SCRIPTS_OUTPUT_PATH\"\n\n# tail -f /dev/null",
+            "$fxv#2": "#/bin/bash -e\r\nUSER_FOLDER=$(pwd)\r\n\r\nadbGlobalToken=$(az account get-access-token --resource 2ff814a6-3304-4ab8-85cb-cd0e6f879c1d --output json | jq -r .accessToken)\r\nazureApiToken=$(az account get-access-token --resource $AZ_MANAGEMENT_URI --output json | jq -r .accessToken)\r\n\r\nauthHeader=\"Authorization: Bearer $adbGlobalToken\"\r\nadbSPMgmtToken=\"X-Databricks-Azure-SP-Management-Token:$azureApiToken\"\r\nadbResourceId=\"X-Databricks-Azure-Workspace-Resource-Id:$ADB_WORKSPACE_ID\"\r\n\r\necho \"Download Sample notebooks\"\r\nmkdir -p notebooks && cd notebooks\r\ncurl -L \\\r\n    -O \"https://raw.githubusercontent.com/aehrc/VariantSpark/master/examples/run_importance_chr22_with_hail.ipynb\" \\\r\n    -O \"https://raw.githubusercontent.com/aehrc/VariantSpark/3ddcad2ec49922030c762757e82ccbabe6a15903/examples/run_importance_chr22.ipynb\" \\\r\n    -O \"https://github.com/aehrc/VariantSpark/blob/master/dev-notebooks/HipsterHailvsVS_covariates.ipynb\"\r\ncd $USER_FOLDER\r\n\r\necho \"Upload Sample notebooks\"\r\nfor notebook in notebooks/*.ipynb; do\r\n    filename=$(basename $notebook)\r\n    echo \"Upload sample notebook $notebook to workspace\"\r\n    curl -sS -X POST -H \"$authHeader\" -H \"$adbSPMgmtToken\" -H \"$adbResourceId\" \\\r\n        https://${ADB_WORKSPACE_URL}/api/2.0/workspace/import \\\r\n        --form contents=@\"$notebook\" \\\r\n        --form path=\"/Shared/$filename\" \\\r\n        --form format=JUPYTER \\\r\n        --form language=PYTHON \\\r\n        --form overwrite=true\r\ndone\r\n\r\necho \"Download Sample Data\"\r\nmkdir -p data && cd data\r\ncurl -L \\\r\n    -O \"https://raw.githubusercontent.com/aehrc/VariantSpark/master/data/chr22_1000.vcf\" \\\r\n    -O \"https://raw.githubusercontent.com/aehrc/VariantSpark/master/data/chr22-labels.csv\" \\\r\n    -O \"https://raw.githubusercontent.com/aehrc/VariantSpark/master/data/chr22-labels-hail.csv\" \\\r\n    -O \"https://github.com/aehrc/VariantSpark/raw/master/data/hipsterIndex/hipster.vcf.bgz\" \\\r\n    -O \"https://github.com/aehrc/VariantSpark/raw/master/data/hipsterIndex/hipster_labels_covariates.txt\"\r\n    \r\ncd $USER_FOLDER\r\n\r\necho \"Upload Sample data\"\r\nfor file in data/*.*; do\r\n    filename=$(basename $file)\r\n    echo \"Upload sample data $file to workspace\"\r\n    curl -sS -X POST -H \"$authHeader\" -H \"$adbSPMgmtToken\" -H \"$adbResourceId\" \\\r\n        https://${ADB_WORKSPACE_URL}/api/2.0/dbfs/put \\\r\n        --form contents=@\"$file\" \\\r\n        --form path=\"/databricks/Filestore/$filename\" \\\r\n        --form overwrite=true\r\ndone\r\n\r\necho \"Enable Container Services\"\r\ncurl -sS -X PATCH -H \"$authHeader\" -H \"$adbSPMgmtToken\" -H \"$adbResourceId\"         https://${ADB_WORKSPACE_URL}/api/2.0/preview/workspace-conf --data '{\"enableDcs\": \"true\" }'\r\n",
+            "$fxv#3": "#/bin/bash -e\r\n\r\n# Databricks cluster config variables\r\nDATABRICKS_SPARK_CONF='{\r\n        \"spark.databricks.delta.preview.enabled\": \"true\"\r\n    }'\r\n\r\nDATABRICKS_CLUSTER_LOG='{\r\n    \"dbfs\": {\r\n      \"destination\": \"dbfs:/logs\"\r\n    }\r\n}'\r\n\r\nHAIL_DOCKER_URL='{\r\n    \"url\": \"projectglow/databricks-hail:0.2.67\"\r\n}'\r\n\r\n# Databricks Auth headers\r\nadbGlobalToken=$(az account get-access-token --resource 2ff814a6-3304-4ab8-85cb-cd0e6f879c1d --output json | jq -r .accessToken)\r\nazureApiToken=$(az account get-access-token --resource $AZ_MANAGEMENT_URI --output json | jq -r .accessToken)\r\n\r\n# Create Auth header for Databricks\r\nauthHeader=\"Authorization: Bearer $adbGlobalToken\"\r\nadbSPMgmtToken=\"X-Databricks-Azure-SP-Management-Token:$azureApiToken\"\r\nadbResourceId=\"X-Databricks-Azure-Workspace-Resource-Id:$ADB_WORKSPACE_ID\"\r\n\r\necho \"Create Cluster\"\r\n\r\nCLUSTER_CREATE_JSON_STRING=$(jq -n -c \\\r\n    --arg cn \"$DATABRICKS_CLUSTER_NAME\" \\\r\n    --arg sv \"$DATABRICKS_SPARK_VERSION\" \\\r\n    --arg nt \"$DATABRICKS_NODE_TYPE\" \\\r\n    --arg nw \"$DATABRICKS_NUM_WORKERS\" \\\r\n    --arg spc \"$DATABRICKS_SPARK_CONF\" \\\r\n    --arg at \"$DATABRICKS_AUTO_TERMINATE_MINUTES\" \\\r\n    --arg cl \"$DATABRICKS_CLUSTER_LOG\" \\\r\n    --arg hdi \"$HAIL_DOCKER_URL\" \\\r\n    '{cluster_name: $cn,\r\n                    idempotency_token: $cn,\r\n                    spark_version: $sv,\r\n                    node_type_id: $nt,\r\n                    num_workers: ($nw|tonumber),\r\n                    autotermination_minutes: ($at|tonumber),\r\n                    spark_conf: ($spc|fromjson),\r\n                    cluster_log_conf: ($cl|fromjson),\r\n                    docker_image: ($hdi|fromjson)\r\n                    }')\r\n\r\njson=$(echo $CLUSTER_CREATE_JSON_STRING | curl -sS -X POST -H \"$authHeader\" -H \"$adbSPMgmtToken\" -H \"$adbResourceId\" --data-binary \"@-\" \"https://${ADB_WORKSPACE_URL}/api/2.0/clusters/create\")\r\necho \"$json\" >$AZ_SCRIPTS_OUTPUT_PATH\r\n",
+            "$fxv#4": "#/bin/bash -e\r\n\r\nadbGlobalToken=$(az account get-access-token --resource 2ff814a6-3304-4ab8-85cb-cd0e6f879c1d --output json | jq -r .accessToken)\r\nazureApiToken=$(az account get-access-token --resource $AZ_MANAGEMENT_URI --output json | jq -r .accessToken)\r\n\r\nauthHeader=\"Authorization: Bearer $adbGlobalToken\"\r\nadbSPMgmtToken=\"X-Databricks-Azure-SP-Management-Token:$azureApiToken\"\r\nadbResourceId=\"X-Databricks-Azure-Workspace-Resource-Id:$ADB_WORKSPACE_ID\"\r\n\r\nlibraries='[\r\n        {\r\n            \"maven\": {\r\n                \"coordinates\": \"au.csiro.aehrc.variant-spark:variant-spark_2.12:0.5.2\"\r\n            }\r\n        },        \r\n        {\r\n            \"pypi\": {\r\n            \"package\": \"patsy\"\r\n            }\r\n        }, \r\n        {\r\n            \"pypi\": {\r\n            \"package\": \"seaborn\"\r\n            }\r\n        },  \r\n        {\r\n            \"pypi\": {\r\n            \"package\": \"statsmodels\"\r\n            }\r\n        },                    \r\n        {\r\n            \"pypi\": {\r\n            \"package\": \"variant-spark\"\r\n            }\r\n        }            \r\n    ]'\r\n\r\nlibrary_config=$(\r\n    jq -n -c \\\r\n        --arg aci \"$ADB_CLUSTER_ID\" \\\r\n        --arg li \"$libraries\" \\\r\n        '{\r\n      cluster_id: $aci,\r\n      libraries: ($li|fromjson)\r\n  }'\r\n)\r\n\r\njson=$(echo $library_config | curl -sS -X POST -H \"$authHeader\" -H \"$adbSPMgmtToken\" -H \"$adbResourceId\" --data-binary \"@-\" \"https://${ADB_WORKSPACE_URL}/api/2.0/libraries/install\")\r\n\r\necho \"$json\" >\"$AZ_SCRIPTS_OUTPUT_PATH\"\r\n\r\necho \"Configuring services done\"\r\n"
+          },
           "resources": [
             {
               "type": "Microsoft.Resources/deploymentScripts",
-              "apiVersion": "2022-05-01",
+              "apiVersion": "2020-10-01",
               "name": "createAdbPATToken",
               "location": "[parameters('location')]",
               "kind": "AzureCLI",
               "identity": {
                 "type": "UserAssigned",
                 "userAssignedIdentities": {
-                  "[parameters('identity')]": {}
+                  "[format('{0}', parameters('identity'))]": {}
                 }
               },
               "properties": {
@@ -2689,21 +2733,25 @@
                   {
                     "name": "PAT_LIFETIME",
                     "value": "[parameters('adb_pat_lifetime')]"
+                  },
+                  {
+                    "name": "AZ_MANAGEMENT_URI",
+                    "value": "[parameters('azmanagementURI')]"
                   }
                 ],
-                "scriptContent": "#/bin/bash -e\npat_token_config=$(jq -n -c \\\n    --arg ls \"$PAT_LIFETIME\" \\\n    --arg co \"Example Token\" \\\n    '{lifetime_seconds: ($ls|tonumber),\n     comment: $co}')\n\nadbGlobalToken=$(az account get-access-token --resource 2ff814a6-3304-4ab8-85cb-cd0e6f879c1d --output json | jq -r .accessToken)\nazureApiToken=$(az account get-access-token --resource $azmanagementURI --output json | jq -r .accessToken)\n\nauthHeader=\"Authorization: Bearer $adbGlobalToken\"\nadbSPMgmtToken=\"X-Databricks-Azure-SP-Management-Token:$azureApiToken\"\nadbResourceId=\"X-Databricks-Azure-Workspace-Resource-Id:$ADB_WORKSPACE_ID\"\njson=$(echo \"$pat_token_config\" | curl -sS -X POST -H \"$authHeader\" -H \"$adbSPMgmtToken\" -H \"$adbResourceId\" --data-binary \"@-\" \"https://${ADB_WORKSPACE_URL}/api/2.0/token/create\")\n\necho \"$json\" >\"$AZ_SCRIPTS_OUTPUT_PATH\""
+                "scriptContent": "[variables('$fxv#0')]"
               }
             },
             {
               "type": "Microsoft.Resources/deploymentScripts",
-              "apiVersion": "2022-05-01",
+              "apiVersion": "2020-10-01",
               "name": "secretScopeLink",
               "location": "[parameters('location')]",
               "kind": "AzureCLI",
               "identity": {
                 "type": "UserAssigned",
                 "userAssignedIdentities": {
-                  "[parameters('identity')]": {}
+                  "[format('{0}', parameters('identity'))]": {}
                 }
               },
               "properties": {
@@ -2722,7 +2770,7 @@
                   },
                   {
                     "name": "ADB_SECRET_SCOPE_NAME",
-                    "value": "[parameters('adb_secret_scope_name')]"
+                    "value": "[parameters('adb_scope_name')]"
                   },
                   {
                     "name": "AKV_ID",
@@ -2746,10 +2794,14 @@
                   },
                   {
                     "name": "ADB_PAT_TOKEN",
-                    "value": "[reference(resourceId('Microsoft.Resources/deploymentScripts', 'createAdbPATToken')).outputs.token_value]"
+                    "value": "[reference(resourceId('Microsoft.Resources/deploymentScripts', 'createAdbPATToken'), '2020-10-01').outputs.token_value]"
+                  },
+                  {
+                    "name": "AZ_MANAGEMENT_URI",
+                    "value": "[parameters('azmanagementURI')]"
                   }
                 ],
-                "scriptContent": "#/bin/bash -e\n\n# TODO: Create AKV backed secret scope using User assigned managed identity. Currently not supported\n# akv_backed='{\"resource_id\": \"'${AKV_ID}'\",\"dns_name\": \"'${AKV_URI}'\"}'\n# akv_secret_scope_payload=$(\n#     jq -n -c \\\n#         --arg sc \"akv_test\" \\\n#         --arg bak \"$akv_backed\" \\\n#         '{\n#         scope: $sc,\n#         scope_backend_type: \"AZURE_KEYVAULT\",\n#         initial_manage_principal: \"users\",\n#         backend_azure_keyvault: ($bak|fromjson)\n#      }'\n# )\n\n# Create secret scope backed by ADB\nadb_secret_scope_payload=$(\n    jq -n -c \\\n        --arg sc \"$ADB_SECRET_SCOPE_NAME\" \\\n        '{\n        scope: $sc,\n        initial_manage_principal: \"users\"\n     }'\n)\n\nadbGlobalToken=$(az account get-access-token --resource 2ff814a6-3304-4ab8-85cb-cd0e6f879c1d --output json | jq -r .accessToken)\nazureApiToken=$(az account get-access-token --resource $azmanagementURI --output json | jq -r .accessToken)\n\nauthHeader=\"Authorization: Bearer $adbGlobalToken\"\nadbSPMgmtToken=\"X-Databricks-Azure-SP-Management-Token:$azureApiToken\"\nadbResourceId=\"X-Databricks-Azure-Workspace-Resource-Id:$ADB_WORKSPACE_ID\"\n\necho \"Create ADB secret scope backed by Databricks key vault\"\njson=$(echo $adb_secret_scope_payload | curl -sS -X POST -H \"$authHeader\" -H \"$adbSPMgmtToken\" -H \"$adbResourceId\" --data-binary \"@-\" \"https://${ADB_WORKSPACE_URL}/api/2.0/secrets/scopes/create\")\n\nfunction createKey() {\n    local keyName=$1\n    local secretValue=$2\n    json_payload=$(\n        jq -n -c \\\n            --arg sc \"$ADB_SECRET_SCOPE_NAME\" \\\n            --arg k \"$keyName\" \\\n            --arg v \"$secretValue\" \\\n            '{\n            scope: $sc,\n            key: $k,\n            string_value: $v\n        }'\n    )\n    response=$(echo $json_payload | curl -sS -X POST -H \"$authHeader\" -H \"$adbSPMgmtToken\" -H \"$adbResourceId\" --data-binary \"@-\" \"https://${ADB_WORKSPACE_URL}/api/2.0/secrets/put\")\n    echo $response\n\n}\n\ncreateKey \"LogAWkspId\" \"$ADB_LOG_WKSP_ID\"\ncreateKey \"LogAWkspkey\" \"$ADB_LOG_WKSP_KEY\"\nC_ADB_PAT_TOKEN=$(sed -e 's/[\\\"\\\\]//g' <<<$ADB_PAT_TOKEN)\ncreateKey \"dbPATKey\" \"$C_ADB_PAT_TOKEN\"\ncreateKey \"ehKey\" \"$EVENT_HUB_KEY\"\ncreateKey \"stgAccessKey\" \"$STORAGE_ACCESS_KEY\"\n\necho \"$json\" >\"$AZ_SCRIPTS_OUTPUT_PATH\"\n\n# tail -f /dev/null"
+                "scriptContent": "[variables('$fxv#1')]"
               },
               "dependsOn": [
                 "[resourceId('Microsoft.Resources/deploymentScripts', 'createAdbPATToken')]"
@@ -2757,14 +2809,14 @@
             },
             {
               "type": "Microsoft.Resources/deploymentScripts",
-              "apiVersion": "2022-05-01",
+              "apiVersion": "2020-10-01",
               "name": "uploadFilesToAdb",
               "location": "[parameters('location')]",
               "kind": "AzureCLI",
               "identity": {
                 "type": "UserAssigned",
                 "userAssignedIdentities": {
-                  "[parameters('identity')]": {}
+                  "[format('{0}', parameters('identity'))]": {}
                 }
               },
               "properties": {
@@ -2780,21 +2832,25 @@
                   {
                     "name": "ADB_WORKSPACE_ID",
                     "value": "[parameters('adb_workspace_id')]"
+                  },
+                  {
+                    "name": "AZ_MANAGEMENT_URI",
+                    "value": "[parameters('azmanagementURI')]"
                   }
                 ],
-                "scriptContent": "#/bin/bash -e\nUSER_FOLDER=$(pwd)\n\nadbGlobalToken=$(az account get-access-token --resource 2ff814a6-3304-4ab8-85cb-cd0e6f879c1d --output json | jq -r .accessToken)\nazureApiToken=$(az account get-access-token --resource $azmanagementURI --output json | jq -r .accessToken)\n\nauthHeader=\"Authorization: Bearer $adbGlobalToken\"\nadbSPMgmtToken=\"X-Databricks-Azure-SP-Management-Token:$azureApiToken\"\nadbResourceId=\"X-Databricks-Azure-Workspace-Resource-Id:$ADB_WORKSPACE_ID\"\n\necho \"Download Sample notebooks\"\nmkdir -p notebooks && cd notebooks\ncurl -L \\\n    -O \"https://raw.githubusercontent.com/aehrc/VariantSpark/master/examples/run_importance_chr22_with_hail.ipynb\" \\\n    -O \"https://raw.githubusercontent.com/aehrc/VariantSpark/3ddcad2ec49922030c762757e82ccbabe6a15903/examples/run_importance_chr22.ipynb\"\ncd $USER_FOLDER\n\necho \"Upload Sample notebooks\"\nfor notebook in notebooks/*.ipynb; do\n    filename=$(basename $notebook)\n    echo \"Upload sample notebook $notebook to workspace\"\n    curl -sS -X POST -H \"$authHeader\" -H \"$adbSPMgmtToken\" -H \"$adbResourceId\" \\\n        https://${ADB_WORKSPACE_URL}/api/2.0/workspace/import \\\n        --form contents=@\"$notebook\" \\\n        --form path=\"/Shared/$filename\" \\\n        --form format=JUPYTER \\\n        --form language=PYTHON \\\n        --form overwrite=true\ndone\n\necho \"Download Sample Data\"\nmkdir -p data && cd data\ncurl -L \\\n    -O \"https://raw.githubusercontent.com/aehrc/VariantSpark/master/data/chr22_1000.vcf\" \\\n    -O \"https://raw.githubusercontent.com/aehrc/VariantSpark/master/data/chr22-labels.csv\"\n    \ncd $USER_FOLDER\n\necho \"Upload Sample data\"\nfor file in data/*.*; do\n    filename=$(basename $file)\n    echo \"Upload sample data $file to workspace\"\n    curl -sS -X POST -H \"$authHeader\" -H \"$adbSPMgmtToken\" -H \"$adbResourceId\" \\\n        https://${ADB_WORKSPACE_URL}/api/2.0/dbfs/put \\\n        --form contents=@\"$file\" \\\n        --form path=\"/databricks/Filestore/$filename\" \\\n        --form overwrite=true\ndone\n"
+                "scriptContent": "[variables('$fxv#2')]"
               }
             },
             {
               "type": "Microsoft.Resources/deploymentScripts",
-              "apiVersion": "2022-05-01",
+              "apiVersion": "2020-10-01",
               "name": "createAdbCluster",
               "location": "[parameters('location')]",
               "kind": "AzureCLI",
               "identity": {
                 "type": "UserAssigned",
                 "userAssignedIdentities": {
-                  "[parameters('identity')]": {}
+                  "[format('{0}', parameters('identity'))]": {}
                 }
               },
               "properties": {
@@ -2814,7 +2870,7 @@
                   },
                   {
                     "name": "ADB_SECRET_SCOPE_NAME",
-                    "value": "[parameters('adb_secret_scope_name')]"
+                    "value": "[parameters('adb_scope_name')]"
                   },
                   {
                     "name": "DATABRICKS_CLUSTER_NAME",
@@ -2835,9 +2891,17 @@
                   {
                     "name": "DATABRICKS_AUTO_TERMINATE_MINUTES",
                     "value": "[parameters('adb_auto_terminate_min')]"
+                  },
+                  {
+                    "name": "HAIL_DOCKER_IMAGE",
+                    "value": "[parameters('hail_docker_image')]"
+                  },
+                  {
+                    "name": "AZ_MANAGEMENT_URI",
+                    "value": "[parameters('azmanagementURI')]"
                   }
                 ],
-                "scriptContent": "#/bin/bash -e\n\n# Databricks cluster config variables\nDATABRICKS_SPARK_CONF='{\n        \"spark.databricks.delta.preview.enabled\": \"true\"\n    }'\n\nDATABRICKS_CLUSTER_LOG='{\n    \"dbfs\": {\n      \"destination\": \"dbfs:/logs\"\n    }\n}'\n\n# Databricks Auth headers\nadbGlobalToken=$(az account get-access-token --resource 2ff814a6-3304-4ab8-85cb-cd0e6f879c1d --output json | jq -r .accessToken)\nazureApiToken=$(az account get-access-token --resource  $azmanagementURI --output json | jq -r .accessToken)\n\n# Create Auth header for Databricks\nauthHeader=\"Authorization: Bearer $adbGlobalToken\"\nadbSPMgmtToken=\"X-Databricks-Azure-SP-Management-Token:$azureApiToken\"\nadbResourceId=\"X-Databricks-Azure-Workspace-Resource-Id:$ADB_WORKSPACE_ID\"\n\necho \"Create Cluster\"\n\nCLUSTER_CREATE_JSON_STRING=$(jq -n -c \\\n    --arg cn \"$DATABRICKS_CLUSTER_NAME\" \\\n    --arg sv \"$DATABRICKS_SPARK_VERSION\" \\\n    --arg nt \"$DATABRICKS_NODE_TYPE\" \\\n    --arg nw \"$DATABRICKS_NUM_WORKERS\" \\\n    --arg spc \"$DATABRICKS_SPARK_CONF\" \\\n    --arg at \"$DATABRICKS_AUTO_TERMINATE_MINUTES\" \\\n    --arg cl \"$DATABRICKS_CLUSTER_LOG\" \\\n    '{cluster_name: $cn,\n                    idempotency_token: $cn,\n                    spark_version: $sv,\n                    node_type_id: $nt,\n                    num_workers: ($nw|tonumber),\n                    autotermination_minutes: ($at|tonumber),\n                    spark_conf: ($spc|fromjson),\n                    cluster_log_conf: ($cl|fromjson)\n                    }')\n\njson=$(echo $CLUSTER_CREATE_JSON_STRING | curl -sS -X POST -H \"$authHeader\" -H \"$adbSPMgmtToken\" -H \"$adbResourceId\" --data-binary \"@-\" \"https://${ADB_WORKSPACE_URL}/api/2.0/clusters/create\")\necho \"$json\" >$AZ_SCRIPTS_OUTPUT_PATH\n"
+                "scriptContent": "[variables('$fxv#3')]"
               },
               "dependsOn": [
                 "[resourceId('Microsoft.Resources/deploymentScripts', 'secretScopeLink')]",
@@ -2846,14 +2910,14 @@
             },
             {
               "type": "Microsoft.Resources/deploymentScripts",
-              "apiVersion": "2022-05-01",
+              "apiVersion": "2020-10-01",
               "name": "configAdbCluster",
               "location": "[parameters('location')]",
               "kind": "AzureCLI",
               "identity": {
                 "type": "UserAssigned",
                 "userAssignedIdentities": {
-                  "[parameters('identity')]": {}
+                  "[format('{0}', parameters('identity'))]": {}
                 }
               },
               "properties": {
@@ -2873,10 +2937,14 @@
                   },
                   {
                     "name": "ADB_CLUSTER_ID",
-                    "value": "[reference(resourceId('Microsoft.Resources/deploymentScripts', 'createAdbCluster')).outputs.cluster_id]"
+                    "value": "[reference(resourceId('Microsoft.Resources/deploymentScripts', 'createAdbCluster'), '2020-10-01').outputs.cluster_id]"
+                  },
+                  {
+                    "name": "AZ_MANAGEMENT_URI",
+                    "value": "[parameters('azmanagementURI')]"
                   }
                 ],
-                "scriptContent": "#/bin/bash -e\n\nadbGlobalToken=$(az account get-access-token --resource 2ff814a6-3304-4ab8-85cb-cd0e6f879c1d --output json | jq -r .accessToken)\nazureApiToken=$(az account get-access-token --resource $azmanagementURI --output json | jq -r .accessToken)\n\nauthHeader=\"Authorization: Bearer $adbGlobalToken\"\nadbSPMgmtToken=\"X-Databricks-Azure-SP-Management-Token:$azureApiToken\"\nadbResourceId=\"X-Databricks-Azure-Workspace-Resource-Id:$ADB_WORKSPACE_ID\"\n\nlibraries='[\n        {\n            \"maven\": {\n                \"coordinates\": \"au.csiro.aehrc.variant-spark:variant-spark_2.12:0.5.0\"\n            }\n        },        \n        {\n            \"pypi\": {\n            \"package\": \"hail==0.2.74\"\n            }\n        },   \n        {\n            \"pypi\": {\n            \"package\": \"variant-spark\"\n            }\n        }            \n    ]'\n\nlibrary_config=$(\n    jq -n -c \\\n        --arg aci \"$ADB_CLUSTER_ID\" \\\n        --arg li \"$libraries\" \\\n        '{\n      cluster_id: $aci,\n      libraries: ($li|fromjson)\n  }'\n)\n\njson=$(echo $library_config | curl -sS -X POST -H \"$authHeader\" -H \"$adbSPMgmtToken\" -H \"$adbResourceId\" --data-binary \"@-\" \"https://${ADB_WORKSPACE_URL}/api/2.0/libraries/install\")\n\necho \"$json\" >\"$AZ_SCRIPTS_OUTPUT_PATH\"\n\necho \"Configuring services done\"\n"
+                "scriptContent": "[variables('$fxv#4')]"
               },
               "dependsOn": [
                 "[resourceId('Microsoft.Resources/deploymentScripts', 'createAdbCluster')]"
@@ -2884,13 +2952,13 @@
             }
           ],
           "outputs": {
-            "patOutput": {
-              "type": "object",
-              "value": "[reference(resourceId('Microsoft.Resources/deploymentScripts', 'createAdbPATToken'))]"
+            "patToken": {
+              "type": "string",
+              "value": "[reference(resourceId('Microsoft.Resources/deploymentScripts', 'createAdbPATToken'), '2020-10-01').outputs.token_value]"
             },
             "adbCluster": {
               "type": "object",
-              "value": "[reference(resourceId('Microsoft.Resources/deploymentScripts', 'createAdbCluster'))]"
+              "value": "[reference(resourceId('Microsoft.Resources/deploymentScripts', 'createAdbCluster'), '2020-10-01')]"
             }
           }
         }

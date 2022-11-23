@@ -23,7 +23,7 @@ param firewallSubnetName string = 'AzureFirewallSubnet'
 param routeTableName string
 
 @description('Location for all resources.')
-param vnetLocation string = resourceGroup().location
+param vnetLocation string
 
 @description('Cidr range for the spoke vnet.')
 param spokeVnetCidr string
@@ -122,7 +122,7 @@ resource spokeVnetName_resource 'Microsoft.Network/virtualNetworks@2020-08-01' =
             {
               service: 'Microsoft.Storage'
               locations: [
-                resourceGroup().location
+                vnetLocation
               ]
             }
           ]
