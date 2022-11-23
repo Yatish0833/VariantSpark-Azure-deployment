@@ -15,7 +15,7 @@ param vnetName string
 @description('')
 param adminUsername string
 @description('')
-param location string = resourceGroup().location
+param location string
 @description('')
 @secure()
 param adminPassword string
@@ -88,9 +88,6 @@ resource virtualMachineName_resource 'Microsoft.Compute/virtualMachines@2021-03-
       }
     }
   }
-  dependsOn: [
-    networkInterfaceName_resource
-  ]
 }
 
 // output adminUsername string = adminUsername

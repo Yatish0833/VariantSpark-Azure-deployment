@@ -1,7 +1,7 @@
 #/bin/bash -e
 
 adbGlobalToken=$(az account get-access-token --resource 2ff814a6-3304-4ab8-85cb-cd0e6f879c1d --output json | jq -r .accessToken)
-azureApiToken=$(az account get-access-token --resource https://management.core.windows.net/ --output json | jq -r .accessToken)
+azureApiToken=$(az account get-access-token --resource $AZ_MANAGEMENT_URI --output json | jq -r .accessToken)
 
 authHeader="Authorization: Bearer $adbGlobalToken"
 adbSPMgmtToken="X-Databricks-Azure-SP-Management-Token:$azureApiToken"

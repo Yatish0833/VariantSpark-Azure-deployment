@@ -23,7 +23,7 @@ param storageAccountSku string = 'Standard_LRS'
 // @description('Storage Account Sku tier')
 // param storageAccountSkuTier string = 'Premium'
 
-var location  = resourceGroup().location
+param storageLocation string
 
 @description('Enable or disable Blob encryption at Rest.')
 param encryptionEnabled bool = true
@@ -34,7 +34,7 @@ resource storageAccountName_resource 'Microsoft.Storage/storageAccounts@2019-06-
     displayName: storageAccountName
     type: 'Storage'
   }
-  location: location
+  location: storageLocation
   kind: 'StorageV2'
   properties: {
     isHnsEnabled: true

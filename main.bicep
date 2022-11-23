@@ -33,6 +33,8 @@ var adbAkvLinkName = '${substring(uString, 0, 6)}SecretScope'
 
 var managedIdentityName = '${substring(uString, 0, 6)}Identity'
 
+var azmanagementURI = az.environment().resourceManager
+
 @description('Default location of the resources')
 param location string = 'australiaeast'
 @description('')
@@ -120,6 +122,7 @@ module nsg './network/securitygroup.template.bicep' = {
   name: 'NetworkSecurityGroup'
   params: {
     securityGroupName: nsgName
+    securityGroupLocation: location
   }
 }
 
@@ -128,6 +131,7 @@ module routeTable './network/routetable.template.bicep' = {
   name: 'RouteTable'
   params: {
     routeTableName: fwRoutingTable
+    routeTableLocation: location
   }
 }
 
@@ -146,6 +150,7 @@ module vnets './network/vnet.template.bicep' = {
     privateSubnetCidr: PrivateSubnetCidr
     privatelinkSubnetCidr: PrivateLinkSubnetCidr
     clinetDevicesSubnetCidr: clientDevicesSubnetCidr
+    vnetLocation: location
   }
 }
 
@@ -155,6 +160,7 @@ module adlsGen2 './storage/storageaccount.template.bicep' = {
   params: {
     storageAccountName: storageAccountName
     databricksPublicSubnetId: vnets.outputs.databricksPublicSubnetId
+    storageLocation: location
   }
 }
 module adb './databricks/workspace.template.bicep' = {
@@ -164,6 +170,7 @@ module adb './databricks/workspace.template.bicep' = {
     vnetName: vnets.outputs.spokeVnetName
     adbWorkspaceSkuTier: 'premium'
     adbWorkspaceName: adbWorkspaceName
+    adbWorkspaceLocation: location
   }
 }
 module hubFirewall './network/firewall.template.bicep' = {
@@ -171,6 +178,7 @@ module hubFirewall './network/firewall.template.bicep' = {
   name: 'HubFirewall'
   params: {
     firewallName: firewallName
+    firewallLocation: location
     publicIpAddressName: firewallPublicIpName
     vnetName: vnets.outputs.hubVnetName
     webappDestinationAddresses: webappDestinationAddresses
@@ -199,6 +207,7 @@ module keyVault './keyvault/keyvault.template.bicep' = {
   params: {
     keyVaultName: keyVaultName
     objectId: myIdentity.outputs.mIdentityClientId
+    keyVaultLocation: location
   }
 }
 
@@ -210,6 +219,7 @@ module clientpc './other/clientdevice.template.bicep' = {
     adminPassword: adminPassword
     vnetName: vnets.outputs.hubVnetName
     clientPcName: clientPcName
+    location: location
   }
   dependsOn: [
     vnets
@@ -219,6 +229,9 @@ module clientpc './other/clientdevice.template.bicep' = {
 module loganalytics './monitor/loganalytics.template.bicep' = {
   scope: rg
   name: 'LogAnalytics'
+  params: {
+    logAnalyticsWkspLocation: location
+  }
 }
 
 
@@ -232,6 +245,7 @@ module privateEndPoints './network/privateendpoint.template.bicep' = {
     storageAccountName: adlsGen2.name
     storageAccountPrivateLinkResource: adlsGen2.outputs.storageaccount_id
     vnetName: vnets.outputs.spokeVnetName
+    privateLinkLocation: location
   }
 }
 
@@ -243,12 +257,13 @@ module createDatabricksCluster './databricks/deployment.template.bicep' = {
     identity: myIdentity.outputs.mIdentityId
     adb_workspace_url: adb.outputs.databricks_workspaceUrl
     adb_workspace_id: adb.outputs.databricks_workspace_id
-    adb_secret_scope_name: adbAkvLinkName
+    adb_scope_name: adbAkvLinkName
     akv_id: keyVault.outputs.keyvault_id
     akv_uri: keyVault.outputs.keyvault_uri
     LogAWkspId: loganalytics.outputs.logAnalyticsWkspId
     LogAWkspKey: loganalytics.outputs.primarySharedKey
     storageKey: adlsGen2.outputs.key1
+    azmanagementURI: azmanagementURI
   }
 }
 

@@ -2,7 +2,7 @@
 param securityGroupName string
 
 @description('Location for all resources.')
-param securityGroupLocation string = resourceGroup().location
+param securityGroupLocation string
 
 resource securityGroupName_resource 'Microsoft.Network/networkSecurityGroups@2020-05-01' = {
   name: securityGroupName

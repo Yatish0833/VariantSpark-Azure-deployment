@@ -6,7 +6,7 @@ param akv_uri string
 param adb_pat_lifetime string = '3600'
 param adb_workspace_url string
 param adb_workspace_id string
-param adb_secret_scope_name string
+param adb_scope_name string
 param adb_cluster_name string = 'variantspark-cluster-01'
 param adb_spark_version string = '9.1.x-scala2.12'
 param adb_node_type string = 'Standard_D3_v2'
@@ -16,6 +16,7 @@ param adb_auto_terminate_min string = '30'
 param LogAWkspId string
 param LogAWkspKey string
 param storageKey string
+param azmanagementURI string
 
 resource createAdbPATToken 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
   name: 'createAdbPATToken'
@@ -44,6 +45,10 @@ resource createAdbPATToken 'Microsoft.Resources/deploymentScripts@2020-10-01' = 
       {
         name: 'PAT_LIFETIME'
         value: adb_pat_lifetime
+      }
+      {
+        name: 'AZ_MANAGEMENT_URI'
+        value: azmanagementURI
       }
     ]
     scriptContent: loadTextContent('deployment/create_pat.sh')
@@ -76,7 +81,7 @@ resource secretScopeLink 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
       }
       {
         name: 'ADB_SECRET_SCOPE_NAME'
-        value: adb_secret_scope_name
+        value: adb_scope_name
       }
       {
         name: 'AKV_ID'
@@ -102,12 +107,13 @@ resource secretScopeLink 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
         name: 'ADB_PAT_TOKEN'
         value: createAdbPATToken.properties.outputs.token_value
       }
+      {
+        name: 'AZ_MANAGEMENT_URI'
+        value: azmanagementURI
+      }
     ]
     scriptContent: loadTextContent('deployment/create_secret_scope.sh')
   }
-  dependsOn: [
-    createAdbPATToken
-  ]
 }
 
 resource uploadFilesToAdb 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
@@ -134,6 +140,10 @@ resource uploadFilesToAdb 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
         name: 'ADB_WORKSPACE_ID'
         value: adb_workspace_id
       }
+      {
+        name: 'AZ_MANAGEMENT_URI'
+        value: azmanagementURI
+      }      
     ]
     scriptContent: loadTextContent('deployment/pre_cluster_create.sh')
   }
@@ -166,7 +176,7 @@ resource createAdbCluster 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
       }
       {
         name: 'ADB_SECRET_SCOPE_NAME'
-        value: adb_secret_scope_name
+        value: adb_scope_name
       }
       {
         name: 'DATABRICKS_CLUSTER_NAME'
@@ -191,6 +201,10 @@ resource createAdbCluster 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
       {
         name: 'HAIL_DOCKER_IMAGE'
         value: hail_docker_image
+      }
+      {
+        name: 'AZ_MANAGEMENT_URI'
+        value: azmanagementURI
       }
     ]
     scriptContent: loadTextContent('deployment/create_cluster.sh')
@@ -230,12 +244,13 @@ resource configAdbCluster 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
         name: 'ADB_CLUSTER_ID'
         value: createAdbCluster.properties.outputs.cluster_id
       }
+      {
+        name: 'AZ_MANAGEMENT_URI'
+        value: azmanagementURI
+      }      
     ]
     scriptContent: loadTextContent('deployment/post_cluster_create.sh')
   }
-  dependsOn:[
-    createAdbCluster
-  ]
 }
 
 output patToken string = createAdbPATToken.properties.outputs.token_value

@@ -1,5 +1,5 @@
 @description('Azure datacentre Location to deploy the Firewall and IP Address')
-param routeTableLocation string = resourceGroup().location
+param routeTableLocation string
 @description('Name of the Routing Table')
 param routeTableName string
 

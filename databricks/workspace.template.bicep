@@ -6,6 +6,7 @@ param vnetName string
 ])
 @description('')
 param adbWorkspaceSkuTier string
+
 @description('')
 param publicSubnetName string = 'public-subnet'
 @description('')
@@ -13,11 +14,12 @@ param privateSubnetName string = 'private-subnet'
 @description('')
 param disablePublicIp bool = true
 @description('')
-param adbWorkspaceLocation string = resourceGroup().location
+param adbWorkspaceLocation string
 @description('')
 param adbWorkspaceName string
 @description('')
 param tagValues object = {}
+
 
 var managedResourceGroupName = 'databricks-rg-${adbWorkspaceName}-${uniqueString(adbWorkspaceName, resourceGroup().id)}'
 var managedResourceGroupId = '${subscription().id}/resourceGroups/${managedResourceGroupName}'
