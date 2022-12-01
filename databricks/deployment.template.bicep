@@ -3,7 +3,7 @@ param force_update string = utcNow()
 param identity string
 param akv_id string
 param akv_uri string
-param adb_pat_lifetime string = '3600'
+param adb_pat_lifetime string = '60'
 param adb_workspace_url string
 param adb_workspace_id string
 param adb_scope_name string
@@ -13,10 +13,27 @@ param adb_node_type string = 'Standard_D3_v2'
 param adb_num_worker string = '3'
 param hail_docker_image string = 'projectglow/databricks-hail:0.2.74'
 param adb_auto_terminate_min string = '30'
-param LogAWkspId string
-param LogAWkspKey string
-param storageKey string
+// param LogAWkspId string
+// param LogAWkspKey string
+param LogAnalyticsName string
+param StorageAccountName string
+
+
 param azmanagementURI string
+
+resource storageAccount 'Microsoft.Storage/storageAccounts@2021-06-01' existing = {
+  name: StorageAccountName
+}
+
+var storageKey = listKeys(storageAccount.id, storageAccount.apiVersion).keys[0].value
+
+resource LogAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2022-10-01' existing = {
+  name: LogAnalyticsName
+}
+
+var LogAWkspId = LogAnalyticsWorkspace.id
+var LogAWkspKey = listKeys(LogAnalyticsWorkspace.id, LogAnalyticsWorkspace.apiVersion).primarySharedKey
+
 
 resource createAdbPATToken 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
   name: 'createAdbPATToken'

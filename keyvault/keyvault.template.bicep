@@ -35,13 +35,16 @@ param objectId string
 param keyVaultSkuTier string = 'standard'
 param tagValues object = {}
 
-resource keyVaultName_resource 'Microsoft.KeyVault/vaults@2019-09-01' = {
+param enablesSoftDelete bool
+
+resource keyVaultName_resource 'Microsoft.KeyVault/vaults@2022-07-01' = {
   name: keyVaultName
   location: keyVaultLocation
   properties: {
     enabledForDeployment: enabledForDeployment
     enabledForTemplateDeployment: enabledForTemplateDeployment
     enablePurgeProtection: enablePurgeProtection
+    enableSoftDelete: enablesSoftDelete
     tenantId: tenantId
     accessPolicies: [
       {

@@ -1,4 +1,4 @@
-param logAnalyticsWkspName string = toLower('spark-monitoring-${uniqueString(resourceGroup().name)}')
+param logAnalyticsWkspName string //= toLower('spark-monitoring-${uniqueString(resourceGroup().name)}')
 param logAnalyticsWkspLocation string
 @allowed([
   'Free'
@@ -181,7 +181,7 @@ var queries = [
   }
 ]
 
-resource Wksp 'Microsoft.OperationalInsights/workspaces@2020-10-01' = {
+resource Wksp 'Microsoft.OperationalInsights/workspaces@2022-10-01' = {
   name: logAnalyticsWkspName
   location: logAnalyticsWkspLocation
   properties: {
@@ -214,5 +214,8 @@ var keyObj = listKeys(resourceId('Microsoft.OperationalInsights/workspaces', log
 
 // output logAnalyticsWkspId string = Wksp.id
 output logAnalyticsWkspId string = Wksp.properties.customerId
-output primarySharedKey string = keyObj.primarySharedKey
-output secondarySharedKey string = keyObj.secondarySharedKey
+#disable-next-line outputs-should-not-contain-secrets // Does not contain a password
+//output primarySharedKey string = keyObj.primarySharedKey
+#disable-next-line outputs-should-not-contain-secrets // Does not contain a password
+//output secondarySharedKey string = keyObj.secondarySharedKey
+

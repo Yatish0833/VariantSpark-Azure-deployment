@@ -3,7 +3,7 @@ targetScope = 'subscription'
 @minLength(2)
 @maxLength(4)
 @description('2-4 chars to prefix the Azure resources, NOTE: no number or symbols')
-param prefix string = 'arb'
+param prefix string = 'bpb'
 
 @description('Client PC username, NOTE: do not use admin')
 param adminUsername string
@@ -13,7 +13,7 @@ param adminUsername string
 @secure()
 param adminPassword string
 
-var uniqueSubString = '${uniqueString(guid(subscription().subscriptionId))}'
+var uniqueSubString = uniqueString(guid(subscription().subscriptionId))
 var uString = '${prefix}${uniqueSubString}'
 
 // @description('Default storage suffix core - core.windows.net')
@@ -29,14 +29,15 @@ var firewallPublicIpName = '${substring(uString, 0, 6)}FWPIp'
 var fwRoutingTable = '${substring(uString, 0, 6)}AdbRoutingTbl'
 var clientPcName = '${substring(uString, 0, 6)}ClientPc'
 var adbAkvLinkName = '${substring(uString, 0, 6)}SecretScope'
+var loganalyticsWorkspaceName = '${substring(uString, 0, 6)}LogAnalytics'
 // var routeTableName = 'RouteTable'
 
 var managedIdentityName = '${substring(uString, 0, 6)}Identity'
 
-var azmanagementURI = az.environment().resourceManager
+var azmanagementURI = az.environment().authentication.audiences[0]
 
 @description('Default location of the resources')
-param location string = 'australiaeast'
+param location string = az.deployment().location
 @description('')
 param hubVnetName string = 'hubvnet'
 @description('')
@@ -60,6 +61,9 @@ param PrivateSubnetCidr string = '10.179.0.0/18'
 param PublicSubnetCidr string = '10.179.64.0/18'
 @description('')
 param PrivateLinkSubnetCidr string = '10.179.192.0/18'
+
+@description('Specifies whether protection against deletion is enabled for this vault.')
+param enableSoftDelete bool = true  
 
 @description('Australia East ADB webapp address')
 param webappDestinationAddresses array = [
@@ -163,6 +167,7 @@ module adlsGen2 './storage/storageaccount.template.bicep' = {
     storageLocation: location
   }
 }
+
 module adb './databricks/workspace.template.bicep' = {
   scope: rg
   name: 'DatabricksWorkspace'
@@ -208,8 +213,20 @@ module keyVault './keyvault/keyvault.template.bicep' = {
     keyVaultName: keyVaultName
     objectId: myIdentity.outputs.mIdentityClientId
     keyVaultLocation: location
+    enablesSoftDelete: enableSoftDelete
   }
 }
+
+// module keyVaultSecrets './keyvault/keyvaultsecrets.template.bicep' = {
+//   scope: rg
+//   name: 'KeyVaultSecrets'
+//   params: {
+//     keyVaultName: keyVaultName
+//     LogAWkspId string
+//     LogAWkspkey string
+//     StorageAccountName: storageAccountName
+//   }
+// }
 
 module clientpc './other/clientdevice.template.bicep' = {
   name: 'ClientPC'
@@ -230,6 +247,7 @@ module loganalytics './monitor/loganalytics.template.bicep' = {
   scope: rg
   name: 'LogAnalytics'
   params: {
+    logAnalyticsWkspName: loganalyticsWorkspaceName
     logAnalyticsWkspLocation: location
   }
 }
@@ -260,11 +278,16 @@ module createDatabricksCluster './databricks/deployment.template.bicep' = {
     adb_scope_name: adbAkvLinkName
     akv_id: keyVault.outputs.keyvault_id
     akv_uri: keyVault.outputs.keyvault_uri
-    LogAWkspId: loganalytics.outputs.logAnalyticsWkspId
-    LogAWkspKey: loganalytics.outputs.primarySharedKey
-    storageKey: adlsGen2.outputs.key1
+    // LogAWkspId: loganalytics.outputs.logAnalyticsWkspId
+    // LogAWkspKey: loganalytics.outputs.primarySharedKey
+    LogAnalyticsName: loganalyticsWorkspaceName
+    //LogAWkspKey: listKeys(resourceId('Microsoft.OperationalInsights/workspaces', loganalyticsWorkspaceName), '2022-05-01').keys[0].value
+    //storageKey: keyVault.getSecret('StorageAccountKey').value
+    StorageAccountName: storageAccountName
+    //storageKey: listKeys(resourceId('Microsoft.Storage/storageAccounts', storageAccountName), '2022-05-01').keys[0].value
     azmanagementURI: azmanagementURI
   }
+  
 }
 
 // output resourceGroupName string = rg.name

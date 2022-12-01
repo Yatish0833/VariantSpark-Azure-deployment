@@ -10,7 +10,7 @@ param location string = resourceGroup().location
 @description('')
 param eHRuleName string = 'rule'
 
-resource namespaceName_resource 'Microsoft.EventHub/namespaces@2021-01-01-preview' = {
+resource namespaceName_resource 'Microsoft.EventHub/namespaces@2021-11-01' = {
   name: namespaceName
   location: location
   sku: {
@@ -24,7 +24,7 @@ resource namespaceName_resource 'Microsoft.EventHub/namespaces@2021-01-01-previe
   }
 }
 
-resource namespaceName_eventHubName 'Microsoft.EventHub/namespaces/eventhubs@2021-01-01-preview' = {
+resource namespaceName_eventHubName 'Microsoft.EventHub/namespaces/eventhubs@2021-11-01' = {
   parent: namespaceName_resource
   name: eventHubName
   properties: {
@@ -36,7 +36,7 @@ resource namespaceName_eventHubName 'Microsoft.EventHub/namespaces/eventhubs@202
   ]
 }
 
-resource namespaceName_rule 'Microsoft.EventHub/namespaces/eventhubs/authorizationRules@2021-01-01-preview' = {
+resource namespaceName_rule 'Microsoft.EventHub/namespaces/eventhubs/authorizationRules@2021-11-01' = {
   name: '${namespaceName}/${eventHubName}/${eHRuleName}'
   properties: {
     rights: [
@@ -49,7 +49,7 @@ resource namespaceName_rule 'Microsoft.EventHub/namespaces/eventhubs/authorizati
   ]
 }
 
-var keysObj = listKeys(resourceId('Microsoft.EventHub/namespaces/eventhubs/authorizationRules', namespaceName, eventHubName, eHRuleName), '2021-01-01-preview')
+var keysObj = listKeys(resourceId('Microsoft.EventHub/namespaces/eventhubs/authorizationRules', namespaceName, eventHubName, eHRuleName), '2021-11-01')
 
 output eHNamespaceId string = namespaceName_resource.id
 output eHubNameId string = namespaceName_eventHubName.id

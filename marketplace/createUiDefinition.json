@@ -1,0 +1,189 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/0.1.2-preview/CreateUIDefinition.MultiVm.json#",
+    "handler": "Microsoft.Azure.CreateUIDef",
+    "version": "0.1.2-preview",
+    "parameters": {
+        "resourceTypes": [
+            "microsoft.resources/resourcegroups"
+        ],
+        "basics": [
+          {
+            "name": "prefix",
+            "type": "Microsoft.Common.TextBox",
+            "label": "Prefix for resource group",
+            "defaultValue": "vs",
+            "toolTip": "Prefix for resource group to create.",
+            "constraints": {
+                  "required": true,
+                  "validationMessage": ""
+            },
+            "visible": true
+          },
+          {
+            "name": "adminUsername",
+            "type": "Microsoft.Common.TextBox",
+            "label": "Cluster Login User Name",
+            "defaultValue": "",
+            "toolTip": "Client PC username, NOTE: do not use admin",
+            "constraints": {
+                "required": true,
+                "validationMessage": ""
+            },
+            "visible": true
+          },
+          {
+            "name": "adminPassword",
+            "type": "Microsoft.Common.PasswordBox",
+            "label": {
+                    "password": "Cluster Login Password",
+                    "confirmPassword": "Confirm password"
+            },
+            "toolTip": "Client PC password, with atleast 8 char length containing uppercase, digits and special characters ",
+            "constraints": {
+                "required": true,
+                "validationMessage": ""
+            },
+            "options": {
+                "hideConfirmation": false
+            },
+            "visible": true
+          },
+          {
+            "name": "location",
+            "type": "Microsoft.Common.TextBox",
+            "label": "location",
+            "defaultValue": "australiaeast",
+            "toolTip": "Default location of resources ",
+            "constraints": {
+              "required": false,
+              "validationMessage": ""
+            },
+            "visible": true
+          },
+          {
+            "name":  "hubVnetName",
+            "type": "Microsoft.Common.TextBox",
+            "label":  "hubVnetName",
+            "defaultValue": "hubvnet",
+            "toolTip": "hubVnetName",
+            "constraints": {
+              "required": false,
+              "validationMessage": ""
+            },
+            "visible": true
+          },
+          {
+            "name":  "spokeVnetName",
+            "type": "Microsoft.Common.TextBox",
+            "label":  "spokeVnetName",
+            "defaultValue": "spokevnet",
+            "toolTip": "spokeVnetName",
+            "constraints": {
+              "required": false,
+              "validationMessage": ""
+            },
+            "visible": true
+          },
+          {
+            "name":  "HubVnetCidr",
+            "type": "Microsoft.Common.TextBox",
+            "label":  "HubVnetCidr",
+            "defaultValue": "10.0.0.0/16",
+            "toolTip": "HubVnetCidr",
+            "constraints": {
+              "required": false,
+              "validationMessage": ""
+            },
+            "visible": true
+          },
+          {
+            "name":  "FirewallSubnetCidr",
+            "type": "Microsoft.Common.TextBox",
+            "label":  "FirewallSubnetCidr",
+            "defaultValue": "10.0.1.0/26",
+            "toolTip": "FirewallSubnetCidr",
+            "constraints": {
+              "required": false,
+              "validationMessage": ""
+            },
+            "visible": true
+          },
+          {
+            "name":  "clientDevicesSubnetCidr",
+            "type": "Microsoft.Common.TextBox",
+            "label":  "clientDevicesSubnetCidr",
+            "defaultValue": "10.0.200.0/24",
+            "toolTip": "clientDevicesSubnetCidr",
+            "constraints": {
+              "required": false,
+              "validationMessage": ""
+            },
+            "visible": true
+          },
+          {
+            "name":  "SpokeVnetCidr",
+            "type": "Microsoft.Common.TextBox",
+            "label":  "SpokeVnetCidr",
+            "defaultValue": "10.179.0.0/16",
+            "toolTip": "SpokeVnetCidr",
+            "constraints": {
+              "required": false,
+              "validationMessage": ""
+            },
+            "visible": true
+          },
+          {
+            "name": "PrivateSubnetCidr",
+            "type": "Microsoft.Common.TextBox",
+            "label": "PrivateSubnetCidr",
+            "defaultValue": "10.179.0.0/18",
+            "toolTip": "PrivateSubnetCidr",
+            "constraints": {
+              "required": false,
+              "validationMessage": ""
+            },
+            "visible": true
+          },
+          {
+            "name":  "PublicSubnetCidr",
+            "type": "Microsoft.Common.TextBox",
+            "label":  "PublicSubnetCidr",
+            "defaultValue": "10.179.64.0/18",
+            "toolTip": "PublicSubnetCidr",
+            "constraints": {
+              "required": false,
+              "validationMessage": ""
+            },
+            "visible": true
+          },
+          {
+            "name":  "PrivateLinkSubnetCidr",
+            "type": "Microsoft.Common.TextBox",
+            "label":  "PrivateLinkSubnetCidr",
+            "defaultValue": "10.179.192.0/18",
+            "toolTip": "PrivateLinkSubnetCidr",
+            "constraints": {
+              "required": false,
+              "validationMessage": ""
+            },
+            "visible": true
+          }
+        ],
+        "steps": [],
+       "outputs": {
+           "prefix": "[basics('prefix')]",
+           "adminUsername": "[basics('adminUsername')]",
+           "adminPassword": "[basics('adminPassword')]",
+           "location": "[location()]",
+           "hubVnetName": "[basics('hubVnetName')]",
+           "spokeVnetName": "[basics('spokeVnetName')]",
+           "HubVnetCidr": "[basics('HubVnetCidr')]",
+           "FirewallSubnetCidr": "[basics('FirewallSubnetCidr')]",
+           "clientDevicesSubnetCidr": "[basics('clientDevicesSubnetCidr')]",
+           "SpokeVnetCidr": "[basics('SpokeVnetCidr')]",
+           "PrivateSubnetCidr": "[basics('PrivateSubnetCidr')]",
+           "PublicSubnetCidr": "[basics('PublicSubnetCidr')]",
+           "PrivateLinkSubnetCidr": "[basics('PrivateLinkSubnetCidr')]"
+       }
+    }
+}
