@@ -4,7 +4,7 @@ param securityGroupName string
 @description('Location for all resources.')
 param securityGroupLocation string
 
-resource securityGroupName_resource 'Microsoft.Network/networkSecurityGroups@2020-05-01' = {
+resource securityGroupName_resource 'Microsoft.Network/networkSecurityGroups@2022-05-01' = {
   name: securityGroupName
   location: securityGroupLocation
   properties: {

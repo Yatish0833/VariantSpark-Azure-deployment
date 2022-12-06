@@ -3,7 +3,7 @@ param routeTableLocation string
 @description('Name of the Routing Table')
 param routeTableName string
 
-resource routeTableName_resource 'Microsoft.Network/routeTables@2020-08-01' = {
+resource routeTableName_resource 'Microsoft.Network/routeTables@2022-05-01' = {
   name: routeTableName
   location: routeTableLocation
   properties: {

@@ -11,9 +11,10 @@ adbResourceId="X-Databricks-Azure-Workspace-Resource-Id:$ADB_WORKSPACE_ID"
 echo "Download Sample notebooks"
 mkdir -p notebooks && cd notebooks
 curl -L \
-    -O "https://raw.githubusercontent.com/aehrc/VariantSpark/master/examples/run_importance_chr22_with_hail.ipynb" \
-    -O "https://raw.githubusercontent.com/aehrc/VariantSpark/3ddcad2ec49922030c762757e82ccbabe6a15903/examples/run_importance_chr22.ipynb" \
-    -O "https://github.com/aehrc/VariantSpark/blob/master/dev-notebooks/HipsterHailvsVS_covariates.ipynb"
+    -O "https://raw.githubusercontent.com/aehrc/VariantSpark/master/examples/command-line/run_importance_chr22_with_hail.ipynb" \
+    -O "https://raw.githubusercontent.com/aehrc/VariantSpark/master/examples/command-line/run_importance_chr22.ipynb" \
+    -O "https://raw.githubusercontent.com/aehrc/VariantSpark/master/examples/notebooks/HipsterHailvsVS.ipynb" \
+    -O "https://raw.githubusercontent.com/aehrc/VariantSpark/master/examples/notebooks/HipsterHailvsVS_covariates.ipynb"
 cd $USER_FOLDER
 
 echo "Upload Sample notebooks"

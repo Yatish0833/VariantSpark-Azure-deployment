@@ -1,0 +1,202 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/0.1.2-preview/CreateUIDefinition.MultiVm.json#",
+    "handler": "Microsoft.Azure.CreateUIDef",
+    "version": "0.1.2-preview",
+    "parameters": {
+        "resourceTypes": [
+            "microsoft.resources/resourcegroups"
+        ],
+        "basics": [
+          {
+            "name": "prefix",
+            "type": "Microsoft.Common.TextBox",
+            "label": "Prefix for resource group",
+            "defaultValue": "vs",
+            "toolTip": "Prefix for resource group to create.",
+            "constraints": {
+                  "required": true,
+                  "regex": "^[a-z0-9A-Z]{1,4}$",
+                  "validationMessage": "Only alphanumeric characters are allowed, and the value must be 1-4 characters long."
+            },
+            "visible": true
+          },
+          {
+            "name": "adminUsername",
+            "type": "Microsoft.Common.TextBox",
+            "label": "Cluster Login User Name",
+            "defaultValue": "",
+            "toolTip": "Client PC username, NOTE: do not use admin",
+            "constraints": {
+                "required": true,
+                "regex": "^[a-z0-9A-Z]{1,30}$",
+                "validationMessage": "Only alphanumeric characters are allowed, and the value must be 1-30 characters long."
+            },
+            "visible": true
+          },
+          {
+            "name": "adminPassword",
+            "type": "Microsoft.Common.PasswordBox",
+            "label": {
+                    "password": "Cluster Login Password",
+                    "confirmPassword": "Confirm password"
+            },
+            "toolTip": "Client PC password, with at least 12 char length containing uppercase, digits and special characters ",
+            "constraints": {
+                "required": true,
+                "validationMessage": "Client PC password, with atleast 12 char length containing uppercase, digits and special characters",
+                "regex": "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[^\\da-zA-Z]).{12,15}$"
+            },
+            "options": {
+                "hideConfirmation": false
+            },
+            "visible": true
+          },
+          {
+            "name": "location",
+            "type": "Microsoft.Common.TextBox",
+            "label": "location",
+            "defaultValue": "australiaeast",
+            "toolTip": "Default location of resources ",
+            "constraints": {
+              "required": false,
+              "validationMessage": "Only alphabetical characters are allowed, and the value must be 1-30 characters long.",
+              "regex" : "^[a-zA-Z]{1,30}$"
+            },
+            "visible": true
+          },
+          {
+            "name":  "hubVnetName",
+            "type": "Microsoft.Common.TextBox",
+            "label":  "hubVnetName",
+            "defaultValue": "hubvnet",
+            "toolTip": "hubVnetName",
+            "constraints": {
+              "required": false,
+              "validationMessage": "Between 2 and 64 characters long, and contain only alphanumeric, underscores, periods, and hyphens.  Start with alphanumeric, and end with alphanumeric or underscore.",
+              "regex" : "^[a-zA-Z0-9][a-zA-Z0-9_.-]{0,61}[a-zA-Z0-9_]$"
+            },
+            "visible": true
+          },
+          {
+            "name":  "spokeVnetName",
+            "type": "Microsoft.Common.TextBox",
+            "label":  "spokeVnetName",
+            "defaultValue": "spokevnet",
+            "toolTip": "spokeVnetName",
+            "constraints": {
+              "required": false,
+              "validationMessage": "Between 2 and 64 characters long, and contain only alphanumeric, underscores, periods, and hyphens.  Start with alphanumeric, and end with alphanumeric or underscore.",
+              "regex" : "^[a-zA-Z0-9][a-zA-Z0-9_.-]{0,61}[a-zA-Z0-9_]$"
+            },
+            "visible": true
+          },
+          {
+            "name":  "HubVnetCidr",
+            "type": "Microsoft.Common.TextBox",
+            "label":  "HubVnetCidr",
+            "defaultValue": "10.0.0.0/16",
+            "toolTip": "HubVnetCidr",
+            "constraints": {
+              "required": false,
+              "validationMessage": "Valid address range nnn.nnn.nnn.nnn/nn",
+              "regex" : "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]).){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(/([0-9]|[1-2][0-9]|3[0-2]))$"
+            },
+            "visible": true
+          },
+          {
+            "name":  "FirewallSubnetCidr",
+            "type": "Microsoft.Common.TextBox",
+            "label":  "FirewallSubnetCidr",
+            "defaultValue": "10.0.1.0/26",
+            "toolTip": "FirewallSubnetCidr",
+            "constraints": {
+              "required": false,
+              "validationMessage": "Valid address range nnn.nnn.nnn.nnn/nn",
+              "regex" : "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]).){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(/([0-9]|[1-2][0-9]|3[0-2]))$"
+            },
+            "visible": true
+          },
+          {
+            "name":  "clientDevicesSubnetCidr",
+            "type": "Microsoft.Common.TextBox",
+            "label":  "clientDevicesSubnetCidr",
+            "defaultValue": "10.0.200.0/24",
+            "toolTip": "clientDevicesSubnetCidr",
+            "constraints": {
+              "required": false,
+              "validationMessage": "Valid address range nnn.nnn.nnn.nnn/nn",
+              "regex" : "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]).){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(/([0-9]|[1-2][0-9]|3[0-2]))$"
+            },
+            "visible": true
+          },
+          {
+            "name":  "SpokeVnetCidr",
+            "type": "Microsoft.Common.TextBox",
+            "label":  "SpokeVnetCidr",
+            "defaultValue": "10.179.0.0/16",
+            "toolTip": "SpokeVnetCidr",
+            "constraints": {
+              "required": false,
+              "validationMessage": "Valid address range nnn.nnn.nnn.nnn/nn",
+              "regex" : "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]).){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(/([0-9]|[1-2][0-9]|3[0-2]))$"
+            },
+            "visible": true
+          },
+          {
+            "name": "PrivateSubnetCidr",
+            "type": "Microsoft.Common.TextBox",
+            "label": "PrivateSubnetCidr",
+            "defaultValue": "10.179.0.0/18",
+            "toolTip": "PrivateSubnetCidr",
+            "constraints": {
+              "required": false,
+              "validationMessage": "Valid address range nnn.nnn.nnn.nnn/nn",
+              "regex" : "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]).){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(/([0-9]|[1-2][0-9]|3[0-2]))$"
+            },
+            "visible": true
+          },
+          {
+            "name":  "PublicSubnetCidr",
+            "type": "Microsoft.Common.TextBox",
+            "label":  "PublicSubnetCidr",
+            "defaultValue": "10.179.64.0/18",
+            "toolTip": "PublicSubnetCidr",
+            "constraints": {
+              "required": false,
+              "validationMessage": "Valid address range nnn.nnn.nnn.nnn/nn",
+              "regex" : "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]).){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(/([0-9]|[1-2][0-9]|3[0-2]))$"
+            },
+            "visible": true
+          },
+          {
+            "name":  "PrivateLinkSubnetCidr",
+            "type": "Microsoft.Common.TextBox",
+            "label":  "PrivateLinkSubnetCidr",
+            "defaultValue": "10.179.192.0/18",
+            "toolTip": "PrivateLinkSubnetCidr",
+            "constraints": {
+              "required": false,
+              "validationMessage": "Valid address range nnn.nnn.nnn.nnn/nn",
+              "regex" : "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]).){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(/([0-9]|[1-2][0-9]|3[0-2]))$"
+            },
+            "visible": true
+          }
+        ],
+        "steps": [],
+       "outputs": {
+           "prefix": "[basics('prefix')]",
+           "adminUsername": "[basics('adminUsername')]",
+           "adminPassword": "[basics('adminPassword')]",
+           "location": "[location()]",
+           "hubVnetName": "[basics('hubVnetName')]",
+           "spokeVnetName": "[basics('spokeVnetName')]",
+           "HubVnetCidr": "[basics('HubVnetCidr')]",
+           "FirewallSubnetCidr": "[basics('FirewallSubnetCidr')]",
+           "clientDevicesSubnetCidr": "[basics('clientDevicesSubnetCidr')]",
+           "SpokeVnetCidr": "[basics('SpokeVnetCidr')]",
+           "PrivateSubnetCidr": "[basics('PrivateSubnetCidr')]",
+           "PublicSubnetCidr": "[basics('PublicSubnetCidr')]",
+           "PrivateLinkSubnetCidr": "[basics('PrivateLinkSubnetCidr')]"
+       }
+    }
+}

@@ -22,7 +22,7 @@ param adminPassword string
 
 var subnetRef = resourceId('Microsoft.Network/virtualNetworks/subnets', vnetName, 'ClientDevices')
 
-resource networkInterfaceName_resource 'Microsoft.Network/networkInterfaces@2018-10-01' = {
+resource networkInterfaceName_resource 'Microsoft.Network/networkInterfaces@2022-05-01' = {
   name: networkInterfaceName
   location: location
   properties: {
@@ -40,7 +40,7 @@ resource networkInterfaceName_resource 'Microsoft.Network/networkInterfaces@2018
   }
 }
 
-resource virtualMachineName_resource 'Microsoft.Compute/virtualMachines@2021-03-01' = {
+resource virtualMachineName_resource 'Microsoft.Compute/virtualMachines@2022-08-01' = {
   name: virtualMachineName
   location: location
   properties: {

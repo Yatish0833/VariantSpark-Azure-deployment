@@ -28,7 +28,7 @@ param storageLocation string
 @description('Enable or disable Blob encryption at Rest.')
 param encryptionEnabled bool = true
 
-resource storageAccountName_resource 'Microsoft.Storage/storageAccounts@2019-06-01' = {
+resource storageAccountName_resource 'Microsoft.Storage/storageAccounts@2022-05-01' = {
   name: storageAccountName
   tags: {
     displayName: storageAccountName
@@ -70,12 +70,14 @@ resource storageAccountName_resource 'Microsoft.Storage/storageAccounts@2019-06-
   }
 }
 
-resource container 'Microsoft.Storage/storageAccounts/blobServices/containers@2019-06-01' = {
+resource container 'Microsoft.Storage/storageAccounts/blobServices/containers@2022-05-01' = {
   name: '${storageAccountName_resource.name}/default/${storageContainerName}'
 }
 
-var keysObj = listKeys(resourceId('Microsoft.Storage/storageAccounts', storageAccountName), '2021-04-01')
-output key1 string = keysObj.keys[0].value
-output key2 string = keysObj.keys[1].value
+//var keysObj = listKeys(resourceId('Microsoft.Storage/storageAccounts', storageAccountName), '2022-05-01')
+#disable-next-line outputs-should-not-contain-secrets // Does not contain a password
+//output key1 string = keysObj.keys[0].value
+#disable-next-line outputs-should-not-contain-secrets // Does not contain a password
+//output key2 string = keysObj.keys[1].value
 output storageaccount_id string = storageAccountName_resource.id
 // output container_obj object = container.properties

@@ -47,7 +47,7 @@ param clinetDevicesSubnetCidr string
 
 var securityGroupId = resourceId('Microsoft.Network/networkSecurityGroups', securityGroupName)
 
-resource hubVnetName_resource 'Microsoft.Network/virtualNetworks@2020-08-01' = {
+resource hubVnetName_resource 'Microsoft.Network/virtualNetworks@2022-05-01' = {
   name: hubVnetName
   location: vnetLocation
   properties: {
@@ -84,7 +84,7 @@ resource hubVnetName_resource 'Microsoft.Network/virtualNetworks@2020-08-01' = {
   }
 }
 
-resource hubVnetName_Peer_HubSpoke 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2020-08-01' = {
+resource hubVnetName_Peer_HubSpoke 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2022-05-01' = {
   parent: hubVnetName_resource
   name: 'Peer-HubSpoke'
   properties: {
@@ -98,7 +98,7 @@ resource hubVnetName_Peer_HubSpoke 'Microsoft.Network/virtualNetworks/virtualNet
   }
 }
 
-resource spokeVnetName_resource 'Microsoft.Network/virtualNetworks@2020-08-01' = {
+resource spokeVnetName_resource 'Microsoft.Network/virtualNetworks@2022-05-01' = {
   location: vnetLocation
   name: spokeVnetName
   properties: {
@@ -170,7 +170,7 @@ resource spokeVnetName_resource 'Microsoft.Network/virtualNetworks@2020-08-01' =
   }
 }
 
-resource spokeVnetName_Peer_SpokeHub 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2020-08-01' = {
+resource spokeVnetName_Peer_SpokeHub 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2022-05-01' = {
   parent: spokeVnetName_resource
   name: 'Peer-SpokeHub'
   properties: {
