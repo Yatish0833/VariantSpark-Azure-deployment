@@ -9,14 +9,11 @@
     }
   },
   "parameters": {
-    "prefix": {
+    "resourceGroupName": {
       "type": "string",
-      "defaultValue": "bpb",
       "metadata": {
-        "description": "2-4 chars to prefix the Azure resources, NOTE: no number or symbols"
+        "description": "resource group name"
       },
-      "maxLength": 4,
-      "minLength": 2
     },
     "adminUsername": {
       "type": "string",
@@ -182,10 +179,10 @@
   },
   "variables": {
     "uniqueSubString": "[uniqueString(guid(subscription().subscriptionId))]",
-    "uString": "[format('{0}{1}', parameters('prefix'), variables('uniqueSubString'))]",
+    "uString": "[format('{0}{1}', parameters('resourceGroupName'), variables('uniqueSubString'))]",
     "storageAccountName": "[format('{0}stg01', substring(variables('uString'), 0, 10))]",
     "keyVaultName": "[format('{0}akv00', substring(variables('uString'), 0, 6))]",
-    "resourceGroupName": "[format('{0}-rg', substring(variables('uString'), 0, 6))]",
+    "resourceGroupName": "parameters('resourceGroupName')",
     "adbWorkspaceName": "[format('{0}AdbWksp', substring(variables('uString'), 0, 6))]",
     "nsgName": "[format('{0}nsg', substring(variables('uString'), 0, 6))]",
     "firewallName": "[format('{0}HubFW', substring(variables('uString'), 0, 6))]",
@@ -198,6 +195,19 @@
     "azmanagementURI": "[environment().authentication.audiences[0]]"
   },
   "resources": [
+    {
+        "apiVersion": "2020-06-01",
+        "name": "pid-ad7537a8-756e-46f3-b57a-c9633ad84c03-partnercenter",
+        "type": "Microsoft.Resources/deployments",
+        "properties": {
+            "mode": "Incremental",
+            "template": {
+                "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+                "contentVersion": "1.0.0.0",
+                "resources": []
+            }
+        }
+    },
     {
       "type": "Microsoft.Resources/resourceGroups",
       "apiVersion": "2021-04-01",
