@@ -9,11 +9,14 @@
     }
   },
   "parameters": {
-    "resourceGroupName": {
+    "prefix": {
       "type": "string",
+      "defaultValue": "bpb",
       "metadata": {
-        "description": "resource group name"
+        "description": "2-4 chars to prefix the Azure resources, NOTE: no number or symbols"
       },
+      "maxLength": 4,
+      "minLength": 2
     },
     "adminUsername": {
       "type": "string",
@@ -179,10 +182,10 @@
   },
   "variables": {
     "uniqueSubString": "[uniqueString(guid(subscription().subscriptionId))]",
-    "uString": "[format('{0}{1}', parameters('resourceGroupName'), variables('uniqueSubString'))]",
+    "uString": "[format('{0}{1}',parameters('prefix'), variables('uniqueSubString'))]",
     "storageAccountName": "[format('{0}stg01', substring(variables('uString'), 0, 10))]",
     "keyVaultName": "[format('{0}akv00', substring(variables('uString'), 0, 6))]",
-    "resourceGroupName": "parameters('resourceGroupName')",
+    "resourceGroupName": "[resourceGroup().name]",
     "adbWorkspaceName": "[format('{0}AdbWksp', substring(variables('uString'), 0, 6))]",
     "nsgName": "[format('{0}nsg', substring(variables('uString'), 0, 6))]",
     "firewallName": "[format('{0}HubFW', substring(variables('uString'), 0, 6))]",

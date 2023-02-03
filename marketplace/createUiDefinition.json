@@ -2,18 +2,25 @@
     "$schema": "https://schema.management.azure.com/schemas/0.1.2-preview/CreateUIDefinition.MultiVm.json#",
     "handler": "Microsoft.Azure.CreateUIDef",
     "version": "0.1.2-preview",
-    "config": {
-      "basics":{
-        "resourceGroup":{
-          "allowExisting": false
-        }
-      }
-    },
+
     "parameters": {
         "resourceTypes": [
             "microsoft.resources/resourcegroups"
         ],
         "basics": [
+          {
+            "name": "prefix",
+            "type": "Microsoft.Common.TextBox",
+            "label": "Prefix for resource group",
+            "defaultValue": "vs",
+            "toolTip": "Prefix for resource group to create.",
+            "constraints": {
+                  "required": true,
+                  "regex": "^[a-z0-9A-Z]{1,4}$",
+                  "validationMessage": "Only alphanumeric characters are allowed, and the value must be 1-4 characters long."
+            },
+            "visible": true
+          },
           {
             "name": "adminUsername",
             "type": "Microsoft.Common.TextBox",
@@ -178,7 +185,7 @@
         ],
        "steps": [],
        "outputs": {
-           "resourceGroupName": "[basics('resourceGroupName')]",
+           "prefix": "[basics('prefix')]",
            "adminUsername": "[basics('adminUsername')]",
            "adminPassword": "[basics('adminPassword')]",
            "location": "[location()]",
