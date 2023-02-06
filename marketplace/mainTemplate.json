@@ -182,10 +182,10 @@
   },
   "variables": {
     "uniqueSubString": "[uniqueString(guid(subscription().subscriptionId))]",
-    "uString": "[format('{0}{1}',parameters('prefix'), variables('uniqueSubString'))]",
+    "uString": "[format('{0}{1}', parameters('prefix'), variables('uniqueSubString'))]",
     "storageAccountName": "[format('{0}stg01', substring(variables('uString'), 0, 10))]",
     "keyVaultName": "[format('{0}akv00', substring(variables('uString'), 0, 6))]",
-    "resourceGroupName": "[resourceGroup().name]",
+    "resourceGroupName": "[format('{0}-rg', substring(variables('uString'), 0, 6))]",
     "adbWorkspaceName": "[format('{0}AdbWksp', substring(variables('uString'), 0, 6))]",
     "nsgName": "[format('{0}nsg', substring(variables('uString'), 0, 6))]",
     "firewallName": "[format('{0}HubFW', substring(variables('uString'), 0, 6))]",
@@ -199,11 +199,17 @@
   },
   "resources": [
     {
+      "type": "Microsoft.Resources/resourceGroups",
+      "apiVersion": "2021-04-01",
+      "name": "[variables('resourceGroupName')]",
+      "location": "[deployment().location]"
+    },
+    {
         "apiVersion": "2020-06-01",
-        "name": "pid-ad7537a8-756e-46f3-b57a-c9633ad84c03-partnercenter",
+        "name": "pid-XXX",
         "type": "Microsoft.Resources/deployments",
         "properties": {
-            "mode": "Incremental",
+            "mode": "Complete",
             "template": {
                 "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
                 "contentVersion": "1.0.0.0",
@@ -211,12 +217,7 @@
             }
         }
     },
-    {
-      "type": "Microsoft.Resources/resourceGroups",
-      "apiVersion": "2021-04-01",
-      "name": "[variables('resourceGroupName')]",
-      "location": "[parameters('location')]"
-    },
+
     {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2020-10-01",
