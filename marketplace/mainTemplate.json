@@ -200,7 +200,7 @@
   "resources": [
     {
         "apiVersion": "2020-06-01",
-        "name": "pid-XXX",
+        "name": "pid-ad7537a8-756e-46f3-b57a-c9633ad84c03-partnercenter",
         "type": "Microsoft.Resources/deployments",
         "location": "[parameters('location')]",
         "properties": {
